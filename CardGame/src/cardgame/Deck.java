@@ -20,12 +20,12 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 
 public class Deck {
-    ArrayList<Card> deck;
+    private ArrayList<Card> deck;
     
     
-    Deck(){};
+    public Deck(){};
     
-    Deck(String fileName) throws IOException
+    public Deck(String fileName) throws IOException
     {
         readDeck(fileName);
     }
