@@ -9,10 +9,11 @@
 
 package cardgame;
 
-import javax.swing.ImageIcon;
+//import javax.swing.ImageIcon;
+import javafx.scene.image.ImageView;
 
-public class Card {
-    private ImageIcon cardBack = null, cardFront = null;
+public class Card implements java.io.Serializable{
+    private ImageView cardBack = null, cardFront = null;
     private int cardValue = 0;
     private String cardSuit = "The Crown", cardName = "Joker";
     
@@ -40,15 +41,15 @@ public class Card {
      * @param back  The file path to the back picture 
      */
     public Card(String front, String back){
-        cardFront = new ImageIcon(front);
-        cardBack = new ImageIcon(back);
+        cardFront = new ImageView(front);
+        cardBack = new ImageView(back);
         
         //Tell the user if something was wrong attempting to load the files
-        if(cardFront.getImageLoadStatus() == 4)
+        if(cardFront.getImage().isError())
             System.out.println("There was an issue loading the "
                     + "front of the card " + front);
         
-        if(cardBack.getImageLoadStatus() == 4)
+        if(cardBack.getImage().isError())
             System.out.println("There was an issue loading the "
                     + "back of the card " + back);
     }
@@ -56,14 +57,14 @@ public class Card {
     /**
      * @return The image from the back of the card
      */
-    public ImageIcon getBack(){
+    public ImageView getBack(){
         return cardBack;
     }
 
     /**
      * @return The image from the front of the card
      */
-    public ImageIcon getFront(){
+    public ImageView getFront(){
         return cardFront;
     }
     
