@@ -9,7 +9,8 @@
 
 package cardgame;
 
-public class Score implements java.io.Serializable{
+public class Score 
+        implements java.io.Serializable, Comparable<Score>{
     final private int scoreAmt;
     final private java.util.Date time;
     
@@ -24,5 +25,15 @@ public class Score implements java.io.Serializable{
     
     public java.util.Date getTime(){
         return time;
+    }
+    
+    @Override
+    public int compareTo(Score o){
+        int compareInt = this.getScore() - o.getScore();
+         
+        if(compareInt != 0)
+            return compareInt;
+        
+        return this.getTime().compareTo(o.getTime());
     }
 }
