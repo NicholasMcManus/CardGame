@@ -37,7 +37,7 @@ public class Deck {
     
     public void addCard(String cardFront)
     {
-        
+        System.out.println("");
     }
     
     public void createDeck(String fileName)
