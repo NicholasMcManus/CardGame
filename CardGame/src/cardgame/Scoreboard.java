@@ -12,8 +12,8 @@ package cardgame;
 import java.util.ArrayList;
 
 public class Scoreboard {
-    ArrayList<Score> highScores;
-    ArrayList<String> highScorePlayer;
+    private ArrayList<Score> highScores;
+    private ArrayList<String> highScorePlayer;
     
     final int NUM_SCORES;
     
@@ -21,10 +21,33 @@ public class Scoreboard {
     {
         NUM_SCORES = numScores;
         highScores = new ArrayList(NUM_SCORES);
+        highScorePlayer = new ArrayList(NUM_SCORES);
     }
     
     public Scoreboard(ArrayList<Player> players)
     {
         this(players, 10);
+    }
+    
+    private boolean addScore(String playerName, Score score)
+    {
+        if(highScores.isEmpty())
+        {
+            highScores.add(score);
+            highScorePlayer.add(playerName);
+            return true;
+        }
+        
+        if(highScores.size() < NUM_SCORES)
+        {
+            int i;
+            for(i = 0; i < highScores.size(); i++)
+                if(highScores.get(i).compareTo(score) > 0)
+                {
+                    
+                }
+        }
+        
+        return false;
     }
 }
