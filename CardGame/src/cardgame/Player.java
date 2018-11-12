@@ -33,7 +33,11 @@ public class Player implements java.io.Serializable{
     
     public void addScore(int score){
         scoreList.add(new Score(score));
-        Collections.sort(scoreList);
+        Collections.sort(scoreList, Collections.reverseOrder());
+        if(scoreList.size() > 10)
+        {
+            scoreList.remove(10);
+        }
     }
     
     public Score getScore(int scoreNumber) 
@@ -42,6 +46,11 @@ public class Player implements java.io.Serializable{
             throw new ArrayIndexOutOfBoundsException();
         
         return scoreList.get(scoreNumber);
+    }
+    
+    public int getNumScores()
+    {
+        return scoreList.size();
     }
     
     public String getName(){
