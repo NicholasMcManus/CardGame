@@ -15,18 +15,43 @@ public class Scoreboard {
     private ArrayList<Score> highScores;
     private ArrayList<String> highScorePlayer;
     
-    final int NUM_SCORES;
+    private final int NUM_SCORES;
     
     public Scoreboard(ArrayList<Player> players, int numScores)
     {
         NUM_SCORES = numScores;
         highScores = new ArrayList(NUM_SCORES);
         highScorePlayer = new ArrayList(NUM_SCORES);
+        
+        fillScoreBoard(players);
     }
     
     public Scoreboard(ArrayList<Player> players)
     {
         this(players, 10);
+    }
+    
+    private void fillScoreBoard(ArrayList<Player> players)
+    {
+        //For every player
+        for(int i = 0; i < players.size(); i++)
+        {
+            //For every score in a player
+            for(int scoreNum = 0; scoreNum < players.get(i).getNumScores();
+                    scoreNum++)
+            {
+                //If the score was added successfully
+                if(addScore(players.get(i).getName(), players.get(i).getScore(scoreNum)))
+                {
+                    //Check the number of scores
+                    if(highScores.size() > NUM_SCORES)
+                    {
+                        highScores.remove(NUM_SCORES);
+                        highScorePlayer.remove(NUM_SCORES);
+                    }
+                }
+            }
+        }
     }
     
     private boolean addScore(String playerName, Score score)
@@ -38,16 +63,45 @@ public class Scoreboard {
             return true;
         }
         
-        if(highScores.size() < NUM_SCORES)
+        for(int i = 0; i < highScores.size(); i++)
         {
-            int i;
-            for(i = 0; i < highScores.size(); i++)
-                if(highScores.get(i).compareTo(score) > 0)
-                {
-                    
-                }
+            //test = highScores.get(i).compareTo(score);
+            if(highScores.get(i).compareTo(score) <= 0)
+            {
+                highScores.add(i, score);
+                highScorePlayer.add(i, playerName);
+                return true;
+            }
+        }
+        
+        if(highScores.size() < NUM_SCORES)
+        {  
+            highScores.add(score);
+            highScorePlayer.add(playerName);
+            return true;
         }
         
         return false;
+    }
+
+    public int getNumScores()
+    {
+        return highScores.size();
+    }
+    
+    public String getName(int index)
+                throws ArrayIndexOutOfBoundsException{
+        if(index >= highScorePlayer.size())
+            throw new ArrayIndexOutOfBoundsException();
+        
+        return highScorePlayer.get(index);
+    }
+    
+    public Score getScore(int scoreNumber) 
+            throws ArrayIndexOutOfBoundsException{
+        if(scoreNumber >= highScores.size())
+            throw new ArrayIndexOutOfBoundsException();
+        
+        return highScores.get(scoreNumber);
     }
 }
