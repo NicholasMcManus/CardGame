@@ -2,9 +2,9 @@
  * file name: Player.java
  * programmer name: Nick McManus
  * date created: 11-08-2018
- * date of last revision: 
- * details of last revision:
- * short description: 
+ * date of last revision: 11-15-2018
+ * details of last revision: Finish writing header line
+ * short description: Describe a player object to contain scores and a name
  */
 
 package cardgame;
