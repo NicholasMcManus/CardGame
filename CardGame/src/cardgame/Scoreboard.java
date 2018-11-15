@@ -2,9 +2,10 @@
  * file name: Scoreboard.java
  * programmer name: Nick McManus
  * date created: 11-12-2018
- * date of last revision: 
- * details of last revision:
- * short description: 
+ * date of last revision: 11-13-2018
+ * details of last revision: Make the scoreboard work
+ * short description: Be able to create a scoreboard to display a number of
+                        high scores
  */
 
 package cardgame;
