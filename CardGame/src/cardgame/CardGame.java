@@ -37,14 +37,14 @@ public class CardGame extends Application {
     Label mainMenuLabel;
     VBox playerOptions;
     int rowDeck = 2, colummDeck = 2;
+    Scene scene;
     @Override    
     public void start(Stage primaryStage) {
         
         mainMenuPane = new BorderPane();        
         mainMenuPane.setStyle("-fx-background-color: Green");
-        mainMenuLabel = new Label("Matching Game");
-        mainMenuLabel.setFont(new Font("Arial", 69));
-        mainMenuLabel.setAlignment(Pos.CENTER);
+        mainMenuLabel = new Label("       Matching Game");
+        mainMenuLabel.setFont(new Font("Arial", 69));        
         playerOptions = new VBox(20);        
         Button startGameButton = new Button("Start Game");
         startGameButton.setOnAction(new EventHandler<ActionEvent>()
@@ -83,10 +83,10 @@ public class CardGame extends Application {
         playerOptions.getChildren().addAll(startGameButton,leaderBoardButton, optionsButton, exitGameButton);
         playerOptions.setAlignment(Pos.CENTER);
         mainMenuPane.setCenter(playerOptions); 
+        mainMenuLabel.setAlignment(Pos.CENTER);
         mainMenuPane.setTop(mainMenuLabel);
-      
         
-        Scene scene = new Scene(mainMenuPane, 700, 700);
+        scene = new Scene(mainMenuPane, 700, 700);
         
         primaryStage.setTitle("Card Game");
         primaryStage.setScene(scene);
@@ -116,7 +116,7 @@ public class CardGame extends Application {
         returnButton.setAlignment(Pos.BOTTOM_LEFT);        
         boardPane.setVgap(15); 
         boardPane.setHgap(15); 
-        boardPane.setStyle("-fx-background-color: Blue;");
+        boardPane.setStyle("-fx-background-color: Green;");
         
         Button cards [][] = new Button[rowDeck][colummDeck];
         
@@ -132,14 +132,23 @@ public class CardGame extends Application {
             }
         }
         mainMenuPane.setCenter(boardPane);
-        mainMenuPane.setBottom(returnButton);
-        
+        mainMenuPane.setBottom(returnButton);        
     }
     
-    public static void leaderboardScreen()
+    public void leaderboardScreen()
     {
-        BorderPane leaderboardPane = new BorderPane();
-        leaderboardPane.setStyle("-fx-background-color: Blue;");                
+        Button returnButton = new Button("Return");        
+        returnButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event) {
+                   mainMenuPane.getChildren().clear();
+                   mainMenuPane.setStyle("-fx-background-color: Green");
+                   mainMenuPane.setCenter(playerOptions); 
+                   mainMenuPane.setTop(mainMenuLabel);
+            }        
+        });
+        returnButton.setAlignment(Pos.BOTTOM_LEFT);                         
         
         DropShadow leaderboardLabel = new DropShadow();
         leaderboardLabel.setOffsetY(3.0f);
@@ -150,19 +159,94 @@ public class CardGame extends Application {
         t.setX(10.0f);
         t.setY(270.0f);
         t.setFill(Color.RED);
-        t.setText("Leader Board");
+        t.setText("       Leader Board");
         t.setFont(Font.font(null, FontWeight.BOLD, 69));
         
+        VBox leaderBoardBox = new VBox(10);
+        Label info = new Label("James                  100000                     Level 1                         25s"); 
+        HBox hBox [] = new HBox[9];
         
-        
-        
-        
+        for (int i = 0; i < 9; i++) {
+            hBox[i] = new HBox(10);
+            hBox[i].getChildren().add(info);
+        }
+                
+        for (int i = 0; i < 9; i++) {
+            leaderBoardBox.getChildren().addAll(hBox[i]);
+        }
+        mainMenuPane.getChildren().clear();
+        mainMenuPane.setStyle("-fx-background-color: Orange;");
+        mainMenuPane.setTop(t);
+        mainMenuPane.setBottom(returnButton);
+        mainMenuPane.setCenter(leaderBoardBox);
     }
     
-    public static void optionsScreen()
+    public void optionsScreen()
     {
-    
+        Button returnButton = new Button("Return");                
+        returnButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event) {
+                   mainMenuPane.getChildren().clear();
+                   mainMenuPane.setStyle("-fx-background-color: Green");
+                   mainMenuPane.setCenter(playerOptions); 
+                   mainMenuPane.setTop(mainMenuLabel);
+            }        
+        });
+        returnButton.setAlignment(Pos.BOTTOM_LEFT);      
+        
+        DropShadow optionsLabel = new DropShadow();       
+        optionsLabel.setOffsetY(3.0f);
+        optionsLabel.setColor(Color.color(0.4f, 0.4f, 0.4f));
+        Text t = new Text();
+        t.setEffect(optionsLabel);
+        t.setCache(true);
+        t.setX(10.0f);
+        t.setY(270.0f);
+        t.setFill(Color.CADETBLUE);
+        t.setText("           Options");
+        t.setFont(Font.font(null, FontWeight.BOLD, 69));        
+        
+        VBox optionsVBox = new VBox(10);
+        
+        Button deckOptionButton = new Button("  Deck  ");
+        deckOptionButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event) {
+                
+            }            
+        });
+        Button playerOptionButton = new Button("  Player  ");
+        playerOptionButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event) {
+             
+            }        
+        });
+        Button difficultyOptionButton = new Button("Difficulty");
+        difficultyOptionButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event) {
+              
+            }        
+        });
+        
+        optionsVBox.getChildren().addAll(deckOptionButton,playerOptionButton,difficultyOptionButton);                        
+        optionsVBox.setAlignment(Pos.CENTER);
+        
+        mainMenuPane.getChildren().clear();
+        mainMenuPane.setStyle("-fx-background-color: Blue;");
+        mainMenuPane.setCenter(optionsVBox);
+        mainMenuPane.setTop(t);        
+        mainMenuPane.setBottom(returnButton);
+        
     }
+    
+    
     
     
     
