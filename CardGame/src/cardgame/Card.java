@@ -11,9 +11,12 @@ package cardgame;
 
 //import javax.swing.ImageIcon;
 import javafx.scene.image.ImageView;
-
+import javafx.scene.image.Image;
+import java.io.*;
 public class Card implements java.io.Serializable{
-    private ImageView cardBack = null, cardFront = null;
+    private ImageView cardBack = null;
+            //new ImageView("image/card/b1fv.png"); 
+    private ImageView cardFront = null;
     private int cardValue = 0;
     private String cardSuit = "The Crown", cardName = "Joker";
     
@@ -40,9 +43,9 @@ public class Card implements java.io.Serializable{
      * @param front The file path to the front picture
      * @param back  The file path to the back picture 
      */
-    public Card(String front, String back){
-        cardFront = new ImageView(front);
-        cardBack = new ImageView(back);
+    public Card(String front, String back) throws FileNotFoundException {
+        cardFront = new ImageView(new Image(new FileInputStream (front)));
+        cardBack = new ImageView(new Image(new FileInputStream (back)));
         
         //Tell the user if something was wrong attempting to load the files
         if(cardFront.getImage().isError())
@@ -87,6 +90,13 @@ public class Card implements java.io.Serializable{
      */
     public void setName(String name){
         cardName = name;
+    }
+    
+    /**
+     * @return The name for the card
+     */
+    public String getName(){
+        return cardName;
     }
     
     /**
