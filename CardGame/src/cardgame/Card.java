@@ -13,7 +13,9 @@ package cardgame;
 import javafx.scene.image.ImageView;
 
 public class Card implements java.io.Serializable{
-    private ImageView cardBack = null, cardFront = null;
+    private ImageView cardBack = null;
+            //new ImageView("image/card/b1fv.png"); 
+    private ImageView cardFront = null;
     private int cardValue = 0;
     private String cardSuit = "The Crown", cardName = "Joker";
     
@@ -87,6 +89,13 @@ public class Card implements java.io.Serializable{
      */
     public void setName(String name){
         cardName = name;
+    }
+    
+    /**
+     * @return The name for the card
+     */
+    public String getName(){
+        return cardName;
     }
     
     /**
