@@ -45,6 +45,11 @@ public class Deck {
         
     }
     
+    public int getNumCards()
+    {
+        return deck.size();
+    }
+    
     public void readDeck(String fileName) throws IOException
     {
         ObjectInputStream inStream;
