@@ -7,7 +7,7 @@
  * short description: 
  */
 
-package mydeck;
+package cardgame;
 
 //import javax.swing.ImageIcon;
 import javafx.scene.image.ImageView;
