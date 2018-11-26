@@ -7,11 +7,12 @@
  * short description: 
  */
 
-package cardgame;
+package mydeck;
 
 //import javax.swing.ImageIcon;
 import javafx.scene.image.ImageView;
-
+import javafx.scene.image.Image;
+import java.io.*;
 public class Card implements java.io.Serializable{
     private ImageView cardBack = null;
             //new ImageView("image/card/b1fv.png"); 
@@ -42,9 +43,9 @@ public class Card implements java.io.Serializable{
      * @param front The file path to the front picture
      * @param back  The file path to the back picture 
      */
-    public Card(String front, String back){
-        cardFront = new ImageView(front);
-        cardBack = new ImageView(back);
+    public Card(String front, String back) throws FileNotFoundException {
+        cardFront = new ImageView(new Image(new FileInputStream (front)));
+        cardBack = new ImageView(new Image(new FileInputStream (back)));
         
         //Tell the user if something was wrong attempting to load the files
         if(cardFront.getImage().isError())
