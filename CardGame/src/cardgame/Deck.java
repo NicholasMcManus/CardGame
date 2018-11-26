@@ -7,7 +7,7 @@
  * short description: 
  */
 
-package mydeck;
+package cardgame;
 
 import java.util.ArrayList;
 import java.io.File;
