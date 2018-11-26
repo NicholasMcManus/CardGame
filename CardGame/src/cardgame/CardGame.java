@@ -46,6 +46,8 @@ public class CardGame extends Application {
     int rowDeck = 2, colummDeck = 2;
     Scene scene;    
     String deckType, playerName;    
+    ObservableList<String> playersList = FXCollections.observableArrayList("Player1", "Player2", "Player3");
+    
     @Override    
     public void start(Stage primaryStage) {
         
@@ -145,18 +147,7 @@ public class CardGame extends Application {
         t.setText("High Scores");
         t.setFont(Font.font(null, FontWeight.BOLD, 69));
         
-        VBox leaderBoardBox = new VBox(10);
-        Label info = new Label("James                  100000                     Level 1                         25s"); 
-        HBox hBox [] = new HBox[9];
         
-        for (int i = 0; i < 9; i++) {
-            hBox[i] = new HBox(10);
-            hBox[i].getChildren().add(info);
-        }
-                
-        for (int i = 0; i < 9; i++) {
-            leaderBoardBox.getChildren().addAll(hBox[i]);
-        }
         
         VBox titleBox = new VBox(10);
         titleBox.getChildren().add(t);
@@ -166,7 +157,7 @@ public class CardGame extends Application {
         mainMenuPane.setStyle("-fx-background-color: Orange;");
         mainMenuPane.setTop(titleBox);
         mainMenuPane.setBottom(returnButton);
-        mainMenuPane.setCenter(leaderBoardBox);
+        
     }
     
     public void optionsScreen()
@@ -249,20 +240,19 @@ public class CardGame extends Application {
     public void getPlayerOptions()
     {
        HBox playerOptionsBox = new HBox(20);
-       TextField textLabelName = new TextField();
-       Button applyNameButton = new Button("Apply");
+       TextField textFieldName = new TextField();
+       Button applyNameButton = new Button("Apply");       
+       ComboBox playerComboBox = new ComboBox(playersList); 
+       
        Button addNameButton = new Button("Add Name");
        addNameButton.setOnAction(new EventHandler<ActionEvent>(){
            @Override
            public void handle(ActionEvent event) {
-              
-              
+              playersList.add(String.valueOf(textFieldName.getText()));              
            }
-       });
-       ObservableList<String> playersList = FXCollections.observableArrayList("Player1", "Player2", "Player3");
-       final ComboBox playerComboBox = new ComboBox(playersList);
-       
-       playerOptionsBox.getChildren().addAll(playerComboBox,textLabelName, addNameButton);
+       });       
+             
+       playerOptionsBox.getChildren().addAll(playerComboBox,textFieldName, addNameButton);
        playerOptionsBox.setAlignment(Pos.CENTER);
        
        mainMenuPane.setCenter(playerOptionsBox);   
