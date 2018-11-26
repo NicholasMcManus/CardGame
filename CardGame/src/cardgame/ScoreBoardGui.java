@@ -16,6 +16,27 @@ import java.util.ArrayList;
 public class ScoreBoardGui extends GridPane{
     Scoreboard scoreboard;
     
+    public ScoreBoardGui()
+    {
+        ArrayList<Player> playerList = new ArrayList();
+         
+         playerList.add(new Player());
+         playerList.add(new Player("Bill"));
+         playerList.add(new Player("Carrot"));
+         
+         for(Player current: playerList)
+         {
+             for(int i = 0; i < Math.round(Math.random()*4); i++)
+             {
+                 current.addScore((int)(Math.random()*10000));
+             }
+         }
+         
+         scoreboard = new Scoreboard(playerList);
+         
+         generateTable();
+    }
+    
     public ScoreBoardGui(ArrayList<Player> list)
     {
         this(list, 10);
