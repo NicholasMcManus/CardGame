@@ -147,7 +147,10 @@ public class CardGame extends Application {
         t.setText("High Scores");
         t.setFont(Font.font(null, FontWeight.BOLD, 69));
         
-        
+        VBox boardBox = new VBox(10);       
+        boardBox.setAlignment(Pos.CENTER);
+        ScoreBoardGui scoreTable = new ScoreBoardGui();
+        boardBox.getChildren().add(scoreTable);
         
         VBox titleBox = new VBox(10);
         titleBox.getChildren().add(t);
@@ -157,6 +160,7 @@ public class CardGame extends Application {
         mainMenuPane.setStyle("-fx-background-color: Orange;");
         mainMenuPane.setTop(titleBox);
         mainMenuPane.setBottom(returnButton);
+        mainMenuPane.setCenter(boardBox);
         
     }
     
