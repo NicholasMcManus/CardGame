@@ -2,9 +2,9 @@
  * file name: Card.java
  * programmer name: Nick McManus
  * date created: 10-24-2018
- * date of last revision: 
- * details of last revision:
- * short description: 
+ * date of last revision: 11-27-2018
+ * details of last revision: Check for JavaDoc Comments
+ * short description: Describe a card which might be serializable
  */
 
 package cardgame;
