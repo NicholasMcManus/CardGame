@@ -2,9 +2,9 @@
  * file name: ScoreBoardGui.java
  * programmer name: Nick McManus
  * date created: 11-26-2018
- * date of last revision: 11-26-2018
- * details of last revision: do things
- * short description: Create a gridpane to store scores
+ * date of last revision: 11-27-2018
+ * details of last revision: Add JavaDoc Comments
+ * short description: Create a gridpane to represent a scoreboard object
  */
 
 package cardgame;
@@ -14,8 +14,13 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 
 public class ScoreBoardGui extends GridPane{
+    //Declare Variables
     Scoreboard scoreboard;
     
+    /**
+     * Default constructor which creates a random scoreboard
+     * Good for checking formatting before a player list is created
+     */
     public ScoreBoardGui()
     {
         ArrayList<Player> playerList = new ArrayList();
@@ -37,11 +42,21 @@ public class ScoreBoardGui extends GridPane{
          generateTable();
     }
     
+    /**
+     * Construct a scoreboard GUI element from a player list
+     * @param list The list of players
+     */
     public ScoreBoardGui(ArrayList<Player> list)
     {
         this(list, 10);
     }
     
+    /**
+     * Construct a scoreboard GUI element from a player list up to a 
+     * specific length
+     * @param list The list of players
+     * @param numScores The number of scores to store
+     */
     public ScoreBoardGui(ArrayList<Player> list, int numScores)
     {
         super();
@@ -50,7 +65,9 @@ public class ScoreBoardGui extends GridPane{
         generateTable();
     }
     
-    
+    /**
+     * The method which is called to generate the scoreboard GUI element
+     */
     private void generateTable()
     {      
         this.addRow(0, new Text("Rank"), new Text("Name"), new Text("Score"), new Text("Date"));
