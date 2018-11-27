@@ -2,8 +2,8 @@
  * file name: Score.java
  * programmer name: Nick McManus
  * date created: 11-08-2018
- * date of last revision: 
- * details of last revision: Create the score class with a few methods
+ * date of last revision: 11-27-2018
+ * details of last revision: Add java documentation
  * short description: Describe what makes up a score
  */
 
@@ -14,19 +14,37 @@ public class Score
     final private int scoreAmt;
     final private java.util.Date time;
     
+    /**
+     * Constructor for a score object
+     * @param scoreAmt The number used to represent the score
+     */
     public Score(int scoreAmt){
         this.scoreAmt = scoreAmt;
         time = new java.util.Date();
     }
     
+    /**
+     * A getter to return the score held by the object
+     * @return The score
+     */
     public int getScore(){
         return scoreAmt;
     }
     
+    /**
+     * A getter to return the date held by the object
+     * @return An object holding the time from the object
+     */
     public java.util.Date getTime(){
-        return time;
+        java.util.Date timeCopy = (java.util.Date)(time.clone());
+        return timeCopy;
     }
     
+    /**
+     * Function to compare score objects
+     * @param o The object to be compared to This
+     * @return An integer representing the comparison between scores
+     */
     @Override
     public int compareTo(Score o){
         int compareInt = this.getScore() - o.getScore();
