@@ -9,6 +9,7 @@
  */
 package cardgame;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -24,6 +25,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -343,10 +346,15 @@ public class CardGame extends Application {
         
         
         
+        ArrayList<Button> btnCheckList = new ArrayList();
+        
         for (int i = 0; i < rowDeck; i++) {
             for (int j = 0; j < colummDeck; j++) {
-                cards[i][j] = new Button("");                
-                cards[i][j].setStyle("-fx-background-color: White;");                                
+                cards[i][j] = new Button(""); 
+                cards[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
+                
+                //cards[i][j].setOnAction(new EventHandler <EventHandler>);
+               // cards[i][j].setStyle("-fx-background-color: White;");                                
             }
         }
         for (int i = 0; i < rowDeck; i++) {
