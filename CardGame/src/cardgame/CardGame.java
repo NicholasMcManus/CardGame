@@ -11,6 +11,7 @@ package cardgame;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -46,10 +47,11 @@ public class CardGame extends Application {
     BorderPane mainMenuPane;
     Label mainMenuLabel;
     VBox playerOptions, labelBox;
-    int rowDeck = 2, colummDeck = 2;
+    int rowDeck = 2, colummDeck = 2, row, columm, index = 0;
     Scene scene;    
     String deckType, playerName;    
-    ObservableList<String> playersList = FXCollections.observableArrayList("Player1", "Player2", "Player3");
+    ObservableList<String> playersList = FXCollections.observableArrayList("Player1", "Player2", "Player3");    
+    Button cards [][];
     
     @Override    
     public void start(Stage primaryStage) {
@@ -104,7 +106,7 @@ public class CardGame extends Application {
         mainMenuPane.setTop(labelBox);
         
         
-        scene = new Scene(mainMenuPane, 700, 700);
+        scene = new Scene(mainMenuPane, 850, 760);
         
         primaryStage.setTitle("Card Game");
         primaryStage.setScene(scene);
@@ -150,10 +152,10 @@ public class CardGame extends Application {
         t.setText("High Scores");
         t.setFont(Font.font(null, FontWeight.BOLD, 69));
         
-        VBox boardBox = new VBox(10);       
-        boardBox.setAlignment(Pos.CENTER);
+        HBox boardBox = new HBox(10);               
         ScoreBoardGui scoreTable = new ScoreBoardGui();
         boardBox.getChildren().add(scoreTable);
+        boardBox.setAlignment(Pos.BOTTOM_CENTER);
         
         VBox titleBox = new VBox(10);
         titleBox.getChildren().add(t);
@@ -307,7 +309,7 @@ public class CardGame extends Application {
     }
     
     public void setBoard(int difficulty)
-    {
+    {        
         GridPane boardPane = new GridPane();
         Button returnButton = new Button("Return Main Menu");
         returnButton.setOnAction(new EventHandler<ActionEvent>()
@@ -342,21 +344,48 @@ public class CardGame extends Application {
                 break;
         }
         
-        Button cards [][] = new Button[rowDeck][colummDeck];
+        cards = new Button[rowDeck][colummDeck];   
         
+        int totalCards = (rowDeck + colummDeck)/2, found = 0; 
+        int arrayCards[] = new int[totalCards]; 
+        Random rand = new Random();
+        boolean valid = false;
+        index = -1;
         
-        
+        for (int i = 0; i < totalCards; i++) {
+            while(!valid)
+            {    
+                int choice = rand.nextInt(54)+1; 
+                for (int j = 0; j < totalCards; j++) {
+                    if(arrayCards[j] == choice)                    
+                        valid = false;                    
+                }            
+                valid = true;
+                if(valid == true)
+                    arrayCards[i] = choice;
+            }            
+        }
         ArrayList<Button> btnCheckList = new ArrayList();
         
+        
         for (int i = 0; i < rowDeck; i++) {
-            for (int j = 0; j < colummDeck; j++) {
-                cards[i][j] = new Button(""); 
-                cards[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
-                
-                //cards[i][j].setOnAction(new EventHandler <EventHandler>);
-               // cards[i][j].setStyle("-fx-background-color: White;");                                
+            for (int j = 0; j < colummDeck; j++) {                
+                System.out.print(i+ "" + j + " ");     
+                cards[i][j] = new Button("");
+                cards[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));                
+                row = i;
+                columm = j;
+                cards[i][j].setOnAction(new EventHandler <ActionEvent>(){                    
+                    @Override
+                    public void handle(ActionEvent event) {                           
+                        System.out.print(row+ " " + columm);
+                        int index = (row + columm) /2;
+                        cards[row][columm].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/"+arrayCards[index] +".png"))));                                                
+                    }
+                  });                                              
             }
         }
+        
         for (int i = 0; i < rowDeck; i++) {
             for (int j = 0; j < colummDeck; j++) {
                 boardPane.add(cards[i][j],j,i);
