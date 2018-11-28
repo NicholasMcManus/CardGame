@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import javafx.util.Duration;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -129,7 +131,7 @@ public class CardGame extends Application {
     
     public void leaderboardScreen()
     {
-        Button returnButton = new Button("Return");        
+        Button returnButton = new Button("Return");  
         returnButton.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
@@ -156,6 +158,10 @@ public class CardGame extends Application {
         
         HBox boardBox = new HBox(10);               
         ScoreBoardGui scoreTable = new ScoreBoardGui();
+        scoreTable.setHgap(40);
+        scoreTable.setFont(Font.font(20));
+        //scoreTable.setCSS("-fx-base: white; -fx-font-size: 20px;");
+        scoreTable.setColor(Color.BLUE);
         boardBox.getChildren().add(scoreTable);
         boardBox.setAlignment(Pos.BOTTOM_CENTER);
         
@@ -478,6 +484,12 @@ public class CardGame extends Application {
                                 
                                 cards[rows.get(0)][columns.get(0)].setDisable(false);
                                 cards[rows.get(1)][columns.get(1)].setDisable(false);
+                            }
+                            
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException ex) {
+                                //Logger.getLogger(CardGame.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             
                             rows.clear();
