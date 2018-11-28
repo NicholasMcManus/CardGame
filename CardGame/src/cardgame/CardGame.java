@@ -10,6 +10,7 @@
 package cardgame;
 
 import java.util.ArrayList;
+import javafx.util.Duration;
 import java.util.HashSet;
 import java.util.Random;
 import javafx.application.Application;
@@ -38,6 +39,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.animation.*;
 
 /**
  *
@@ -47,7 +49,7 @@ public class CardGame extends Application {
     BorderPane mainMenuPane;
     Label mainMenuLabel;
     VBox playerOptions, labelBox;
-    int rowDeck = 2, colummDeck = 2, row, columm, index = 0;
+    int rowDeck = 2, colummDeck = 2, index = 0;
     Scene scene;    
     String deckType, playerName;    
     ObservableList<String> playersList = FXCollections.observableArrayList("Player1", "Player2", "Player3");    
@@ -346,41 +348,160 @@ public class CardGame extends Application {
         
         cards = new Button[rowDeck][colummDeck];   
         
-        int totalCards = (rowDeck + colummDeck)/2, found = 0; 
+        int totalCards = (rowDeck * colummDeck)/2, found = 0; 
         int arrayCards[] = new int[totalCards]; 
+        int[][] cardsInt = new int[rowDeck][colummDeck];
         Random rand = new Random();
         boolean valid = false;
         index = -1;
         
-        for (int i = 0; i < totalCards; i++) {
-            while(!valid)
-            {    
-                int choice = rand.nextInt(54)+1; 
-                for (int j = 0; j < totalCards; j++) {
-                    if(arrayCards[j] == choice)                    
-                        valid = false;                    
-                }            
-                valid = true;
-                if(valid == true)
-                    arrayCards[i] = choice;
-            }            
+//        for (int i = 0; i < totalCards; i++) {
+//            while(!valid)
+//            {    
+//                int choice = rand.nextInt(54)+1;
+//                for (int j = 0; j < totalCards; j++) {
+//                    if(arrayCards[j] == choice)                    
+//                        valid = false;                    
+//                }            
+//                valid = true;
+//                if(valid == true)
+//                    arrayCards[i] = choice;
+//            }            
+//        }
+        
+        int count = 0;
+        
+        do{
+            int choice = rand.nextInt(54)+1 ;
+            if(!exists(arrayCards, choice, count)){
+                arrayCards[count] = choice;
+                count++;
+            }
+            
+        }while(count != totalCards);
+        
+        System.out.println("Row deck is " + rowDeck + "and culumn deck is " + colummDeck);
+        System.out.println("This is the used cards in the deck ");
+        for(int i = 0; i < totalCards; i++){
+            System.out.print(arrayCards[i] + " ");
         }
-        ArrayList<Button> btnCheckList = new ArrayList();
+        System.out.println();
+        
+        for (int i = 0; i < rowDeck; i++){
+            for (int j = 0; j < colummDeck; j++)
+                cardsInt[i][j] = 0;
+        }
+        
+        
+        count = 0;
+        while (count != (rowDeck * colummDeck)/2){
+            int choice;
+            int iIndex;
+            int jIndex;
+            do{
+                choice = rand.nextInt(arrayCards.length);
+            }while (arrayCards[choice] == 0);
+            
+            System.out.println("the choice picked from the used cards is" + arrayCards[choice]);
+            
+            do {
+               iIndex = rand.nextInt(rowDeck);
+               jIndex = rand.nextInt(colummDeck);
+            }while(cardsInt[iIndex][jIndex] != 0);
+            
+            System.out.println("iIndex is" + iIndex);
+            System.out.println("jIndex is" + jIndex);
+            
+            cardsInt[iIndex][jIndex] = arrayCards[choice];
+            
+            do {
+               iIndex = rand.nextInt(rowDeck);
+               jIndex = rand.nextInt(colummDeck);
+               
+            }while(cardsInt[iIndex][jIndex] != 0);
+            System.out.println("the second iIndex is" + iIndex);
+            System.out.println("the second jIndex is" + jIndex);
+            
+            cardsInt[iIndex][jIndex] = arrayCards[choice];
+            arrayCards[choice] = 0;
+            
+            count++;
+            System.out.println("count is"+ count);
+            
+            System.out.println("This is what we have in it so far");
+            for (int i = 0; i < rowDeck; i++){
+                for (int j = 0; j < colummDeck; j++)
+                    System.out.print(cardsInt[i][j] + " ");
+                System.out.println();
+            }
+            
+        }
+
+        ArrayList<Integer> rows = new ArrayList(2);
+        ArrayList<Integer> columns = new ArrayList(2);
+        ArrayList<Integer> matches = new ArrayList((rowDeck*colummDeck)/2);
+         //int[] rows = new int[2];
+        //int[] columns = new int[2];
         
         
         for (int i = 0; i < rowDeck; i++) {
             for (int j = 0; j < colummDeck; j++) {                
-                System.out.print(i+ "" + j + " ");     
+                //System.out.print(i+ "" + j + " ");     
                 cards[i][j] = new Button("");
                 cards[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));                
-                row = i;
-                columm = j;
+                final int row = i;
+                final int columm = j;
+                int count2 = 0;
                 cards[i][j].setOnAction(new EventHandler <ActionEvent>(){                    
                     @Override
-                    public void handle(ActionEvent event) {                           
-                        System.out.print(row+ " " + columm);
-                        int index = (row + columm) /2;
-                        cards[row][columm].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/"+arrayCards[index] +".png"))));                                                
+                    public void handle(ActionEvent event) {
+                        
+                        cards[row][columm].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/"+cardsInt[row][columm] +".png"))));
+                        System.out.println("row is " + row + " column is" + columm);
+                        
+                        rows.add(row);
+                        columns.add(columm);
+                        
+                        cards[row][columm].setDisable(true);
+                        
+                        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e ->{
+                        if (rows.get(1) != null){
+                            if (cardsInt[rows.get(0)][columns.get(0)] == cardsInt [rows.get(1)][columns.get(1)]){
+                                cards[rows.get(0)][columns.get(0)].setDisable(true);
+                                cards[rows.get(1)][columns.get(1)].setDisable(true);
+                                matches.add(1);
+                            }
+                                
+                            else {
+                                cards[rows.get(0)][columns.get(0)].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
+                                cards[rows.get(1)][columns.get(1)].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
+                                
+                                cards[rows.get(0)][columns.get(0)].setDisable(false);
+                                cards[rows.get(1)][columns.get(1)].setDisable(false);
+                            }
+                            
+                            rows.clear();
+                            columns.clear();
+                            
+                            if (matches.get(rowDeck*colummDeck/2 - 1 ) == 1){
+                            
+                                BorderPane pane = new BorderPane(); 
+                                pane.setStyle("-fx-background-color: Purple");
+                                Label winLabel = new Label("You win!!!");
+                                winLabel.setFont(Font.font("Verdana", 70));
+                                winLabel.setStyle("-fx-background-color: Yellow");
+                                //pane.getChildren().add(winLabel);
+                                pane.setCenter(winLabel);
+                                
+                                Stage winStage = new Stage();
+                                winStage.setTitle("win!!!");
+                                winStage.setScene( new Scene(pane, 400, 200));
+                                winStage.show();
+                            }
+                        }
+                        }));
+                        timeline.setCycleCount(Animation.INDEFINITE);
+                        timeline.play();
                     }
                   });                                              
             }
@@ -404,6 +525,15 @@ public class CardGame extends Application {
         mainMenuPane.setCenter(boardPane);
         mainMenuPane.setBottom(bottomBox);                              
     }
-    
-    
-}
+
+
+    public boolean exists(int arr[], int value, int count){
+
+        for(int i = 0; i < count; i++){
+            if (arr[i] == value)
+                return true;
+        }
+        return false;
+    }
+}       
+ 
