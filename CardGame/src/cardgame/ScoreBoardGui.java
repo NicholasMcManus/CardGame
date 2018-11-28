@@ -12,11 +12,13 @@ package cardgame;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import java.util.ArrayList;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class ScoreBoardGui extends GridPane{
     //Declare Variables
     Scoreboard scoreboard;
-    
+    private int fontSize = 20;
     /**
      * Default constructor which creates a random scoreboard
      * Good for checking formatting before a player list is created
@@ -81,5 +83,38 @@ public class ScoreBoardGui extends GridPane{
             
             this.addRow(i+1, number, name, score, date);
         }
+    }
+    
+    /**
+     * Allow a programmer to set the font used for the text via the Font class
+     * @param newFont The font to be applied to the text
+     */
+    public void setFont(Font newFont)
+    {
+        //Set each of the internal text nodes to the passed Font
+        for(int i = 0; i < this.getChildren().size(); i++)
+            ((Text)(this.getChildren().get(i))).setFont(newFont);
+    }
+    
+    /**
+     * Allow a programmer to set the style of the text via CSS
+     * @param formatting The formatting to be applied to the text
+     */
+    public void setCSS(String formatting)
+    {
+        //Set each of the internal text nodes to the passed Font
+        for(int i = 0; i < this.getChildren().size(); i++)
+            this.getChildren().get(i).setStyle(formatting);
+    }
+    
+    /**
+     * Allow for the color to be changed by passing a color object
+     * @param newColor The color to make the text
+     */
+    public void setColor(Color newColor)
+    {
+        //Set each of the internal text nodes to the passed Font
+        for(int i = 0; i < this.getChildren().size(); i++)
+            ((Text)(this.getChildren().get(i))).setFill(newColor);
     }
 }
