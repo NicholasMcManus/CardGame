@@ -465,7 +465,7 @@ public class CardGame extends Application {
                         cards[row][columm].setDisable(true);
                         
                         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e ->{
-                        if (rows.get(1) != null){
+                        if (rows.size() > 1){
                             if (cardsInt[rows.get(0)][columns.get(0)] == cardsInt [rows.get(1)][columns.get(1)]){
                                 cards[rows.get(0)][columns.get(0)].setDisable(true);
                                 cards[rows.get(1)][columns.get(1)].setDisable(true);
@@ -483,7 +483,7 @@ public class CardGame extends Application {
                             rows.clear();
                             columns.clear();
                             
-                            if (matches.get(rowDeck*colummDeck/2 - 1 ) == 1){
+                            if (matches.size() == (rowDeck*colummDeck/2)){
                             
                                 BorderPane pane = new BorderPane(); 
                                 pane.setStyle("-fx-background-color: Purple");
