@@ -39,6 +39,19 @@ public class Card implements java.io.Serializable{
     }
     
     /**
+     * Create a new card from another card
+     * @param toCopy The card to make a copy of
+     */
+    public Card(Card toCopy)
+    {
+        this.cardName = toCopy.getName();
+        this.cardSuit = toCopy.getSuit();
+        this.cardValue = toCopy.getValue();
+        this.cardFront = toCopy.getFront();
+        this.cardBack = toCopy.getBack();
+    }
+    
+    /**
      * Create a card to be used in a GUI
      * @param front The file path to the front picture
      * @param back  The file path to the back picture 
