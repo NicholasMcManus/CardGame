@@ -42,7 +42,7 @@ public class Card implements java.io.Serializable{
      * Create a new card from another card
      * @param toCopy The card to make a copy of
      */
-    public Card(Card toCopy)
+     public Card(Card toCopy)
     {
         this.cardName = toCopy.getName();
         this.cardSuit = toCopy.getSuit();
@@ -50,7 +50,7 @@ public class Card implements java.io.Serializable{
         this.cardFront = toCopy.getFront();
         this.cardBack = toCopy.getBack();
     }
-    
+     
     /**
      * Create a card to be used in a GUI
      * @param front The file path to the front picture
@@ -68,6 +68,13 @@ public class Card implements java.io.Serializable{
         if(cardBack.getImage().isError())
             System.out.println("There was an issue loading the "
                     + "back of the card " + back);
+    }
+    
+    
+    public Card(String front, String back, String suit, int value) throws FileNotFoundException{
+        this(front, back);
+        cardSuit = suit;
+        cardValue = value;
     }
     
     /**
