@@ -40,6 +40,8 @@ public class MatchPane extends javafx.scene.layout.GridPane{
     public MatchPane(Deck deck){
         
         this.deck = new Deck();
+        startTime = new Date();
+        endTime = new Date();
         
         //Make a copy of the deck, because it will be changed for boolean logic
         for(Card current: deck.getDeck())
@@ -93,9 +95,9 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         ArrayList<Card> finalDeck = new ArrayList();
         
         //Create a second deck sharing the same cards as the original deck
-        for(int i = 1; i <= deck.getDeck().size(); i++)
+        for(int i = 0; i < deck.getDeck().size(); i++)
         {
-            deck.getDeck().get(i).setValue(i);
+            deck.getDeck().get(i).setValue(i+1);
             secondDeck.addCard(deck.getDeck().get(i));
         }
         
@@ -145,16 +147,8 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         Button cards[][] = new Button[ROW][COL];   
         
         //Containers to make things work
-        int totalCards = (ROW * COL)/2; 
         int[][] cardsInt = new int[ROW][COL];
-        Card[][] cardArray = new Card[ROW][COL];
-        
-        //Random for randomization
-        Random rand = new Random();
-        
-        //Generic counting variable
-        int count = 0;
-        
+        Card[][] cardArray = new Card[ROW][COL];        
         
         //Add enough cards to do a matching game with a certain number of cards
         /**Depreciated**
@@ -309,6 +303,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                                 //cards[rows.get(1)][columns.get(1)].setDisable(true);
                                 matches.add(1);
                                 //Add code to remove cards outside the bounds
+                                //*Check to see if this is a problem*/
                             }
                                 
                             else {
@@ -321,7 +316,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                                 //Add code to enable out of bounds cards
                                 for(int i = 0; i < rows.size(); i++)
                                 {
-                                    cards[rows.get(i)][columns.get(i)].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
+                                    cards[rows.get(i)][columns.get(i)].setGraphic(cardArray[rows.get(i)][columns.get(i)].getBack());
                                     cards[rows.get(i)][columns.get(i)].setDisable(false);
                                 }
                             }
