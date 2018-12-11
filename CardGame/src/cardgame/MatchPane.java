@@ -49,19 +49,18 @@ public class MatchPane extends javafx.scene.layout.GridPane{
             this.deck.addCard(new Card(current));
         }
         
-        int tempRow = (int)Math.sqrt(deck.getDeck().size());
-        tempRow *= 2;
+        int tempRow = (int)Math.sqrt(deck.getDeck().size()*2);
         
         //Figure out the optimal display size
-        while(deck.getDeck().size() % tempRow != 0)
+        while((deck.getDeck().size() * 2) % tempRow != 0)
             tempRow--;
         
         //Assign the gloabl variables to the value
         ROW = tempRow;
-        COL = (deck.getDeck().size()*2) - ROW;
+        COL = ((deck.getDeck().size() * 2) / ROW);
         
         //Build the map with handlers, use the card score as its ID
-        buildMap(false);
+        buildMap(true);
     }
     
     /**
@@ -82,6 +81,23 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         
         System.out.println("Optimal Board: Rows: " + rows +
                 " Cols: " + list.getDeck().size()/rows);
+        
+        //Test building a match board
+        int matchDeck = list.getDeck().size()*2, matchRows;
+        
+        System.out.println("Number of cards: " + matchDeck);
+        sqrt = Math.sqrt(matchDeck);
+        matchRows = (int)sqrt;
+        
+        
+        System.out.println("Square Root: " + sqrt);
+        System.out.println("Base Rows: " + matchRows);
+        while(matchDeck % matchRows != 0)
+            matchRows--;
+        
+        System.out.println("Optimal Board: Rows: " + matchRows +
+                " Cols: " + matchDeck/matchRows);
+        
     }
     
     /** 
@@ -164,11 +180,15 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         
         //New Implementation
         //Fill the Card Array from the ArrayList
+        System.out.println("ROW: " + ROW + " COL: " + COL);
+        int cardCount = 0;
         for(int row = 0; row < cardArray.length; row++)
         {
             for(int col = 0; col < cardArray[row].length; col++)
             {
-                cardArray[row][col] = finalDeck.get(row*cardArray.length+col);
+                int index = cardCount++;
+                cardArray[row][col] = finalDeck.get(index);
+                System.out.println( row*cardArray.length + " " + "" + col + " = " + index);
             }
         }
         
@@ -268,7 +288,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                 
                 //Set card as the back graphic
                 //cards[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));                
-                cards[i][j].setGraphic(cardArray[i][j].getBack());
+                cards[i][j].setGraphic(new ImageView(cardArray[i][j].getBack().getImage()));
                 
                 
                 //Appeasing the demands of the lambda expression
@@ -282,7 +302,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                         
                         //Set the card as its "face"
                         //cards[row][column].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/"+cardsInt[row][column] +".png"))));
-                        cards[row][column].setGraphic(cardArray[row][column].getFront());
+                        cards[row][column].setGraphic(new ImageView(cardArray[row][column].getFront().getImage()));
                         System.out.println("row is " + row + " column is " + column);
                         
                         //Okay, this appears to add the coordinates of the button
@@ -303,7 +323,11 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                                 //cards[rows.get(1)][columns.get(1)].setDisable(true);
                                 matches.add(1);
                                 //Add code to remove cards outside the bounds
-                                //*Check to see if this is a problem*/
+                                for(int i = 2; i < rows.size(); i++)
+                                {
+                                    cards[rows.get(i)][columns.get(i)].setGraphic(new ImageView(cardArray[rows.get(1)][columns.get(i)].getBack().getImage()));
+                                    cards[rows.get(i)][columns.get(i)].setDisable(false);
+                                }
                             }
                                 
                             else {
@@ -316,7 +340,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                                 //Add code to enable out of bounds cards
                                 for(int i = 0; i < rows.size(); i++)
                                 {
-                                    cards[rows.get(i)][columns.get(i)].setGraphic(cardArray[rows.get(i)][columns.get(i)].getBack());
+                                    cards[rows.get(i)][columns.get(i)].setGraphic(new ImageView(cardArray[i][i].getBack().getImage()));
                                     cards[rows.get(i)][columns.get(i)].setDisable(false);
                                 }
                             }
@@ -336,7 +360,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                                 endTimer();
                                 BorderPane pane = new BorderPane(); 
                                 pane.setStyle("-fx-background-color: Purple");
-                                Label winLabel = new Label("You win!!!");
+                                Label winLabel = new Label("Win Score: " + matchPoints());
                                 winLabel.setFont(Font.font("Verdana", 70));
                                 winLabel.setStyle("-fx-background-color: Yellow");
                                 //pane.getChildren().add(winLabel);
@@ -360,7 +384,11 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
                 this.add(cards[i][j],j,i);
+                if(cheat)
+                    System.out.print(cardArray[i][j].getValue() + " ");
             }
+            if(cheat)
+                System.out.println("");
         }
         startTimer();
         
@@ -430,14 +458,16 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         if(this.startTime.getTime() != this.endTime.getTime())
         {
             score += basePoints();
-            
+            System.out.println("Base Score: " + score);
             //Limit how many points can be lost to time penalties
             if(timePoints() > score)
                 score = 0;
             else
                 score -= timePoints();
+            System.out.println("Time Penalty: " + timePoints());
             
             score += levelPoints();      
+            System.out.println("Level Bonus: " + levelPoints());
         }
         
         return score;
@@ -462,7 +492,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
     {
         //Possibly have this modified by the number of cards
         //More lax time points during harder levels
-        return (int)(endTime.getTime()-startTime.getTime());
+        return (int)(endTime.getTime()-startTime.getTime())/10;
     }
     
     /**
