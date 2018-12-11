@@ -289,9 +289,9 @@ public class CardGame extends Application {
        
         if(readOnce == 0)
             readData();
+        
        playersList.clear();
-              
-       
+        
         for (Player current:officialPlayerList) {
             playersList.add(current.getName());
         }      
@@ -303,6 +303,7 @@ public class CardGame extends Application {
            @Override
            public void handle(ActionEvent event) {
               playersList.add(String.valueOf(textFieldName.getText()));              
+              officialPlayerList.push(new Player(String.valueOf(textFieldName.getText())));
            }
        });       
              
@@ -605,8 +606,7 @@ public class CardGame extends Application {
         
         mainMenuPane.setCenter(boardPane);
         mainMenuPane.setBottom(bottomBox);                              
-    }
-   
+    }   
 
     public boolean exists(int arr[], int value, int count){
 
@@ -644,9 +644,7 @@ public class CardGame extends Application {
             while (true)
             {
                 Player tempPlayer = (Player) inputStream.readObject();
-                officialPlayerList.push(tempPlayer);
-                System.out.println("Name: " + readOnce); //Change
-                readOnce++; //Change
+                officialPlayerList.push(tempPlayer);              
             }        
         }       
          catch(java.io.EOFException ex)
@@ -654,11 +652,13 @@ public class CardGame extends Application {
                 System.out.println("Read Num of names: " + officialPlayerList.size());
                 System.out.println("End of file");
                 inputStream.close();
+                return;
             }
       }
       catch(FileNotFoundException ex)
       {
           System.out.print("Not Found");
+          return;
       }
     }       
 }
