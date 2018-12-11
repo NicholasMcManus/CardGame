@@ -84,7 +84,7 @@ public class Deck implements java.io.Serializable{
         int value; 
         String suit;
         
-        value = Integer.valueOf(cardFront.substring(cardFront.indexOf("/"), cardFront.indexOf(".")));
+        value = Integer.parseInt(cardFront.substring(cardFront.indexOf(File.separatorChar)+1, cardFront.indexOf(".")));
         
         if (value <= 13)
             suit = "spades";
@@ -140,8 +140,21 @@ public class Deck implements java.io.Serializable{
     }
     
     public void buildDeck(String folder) throws FileNotFoundException{
-        for (int i = 0; i < 52; i++){
-            this.addCard(folder +"/"+ i + ".png");
+        
+        String fileName = "NULL";
+        
+        for (int i = 1; i <= 52; i++){
+            
+            try{
+                fileName = folder + File.separatorChar + i + ".png";
+                this.addCard(fileName);
+            }catch(FileNotFoundException ex)
+            {
+                System.out.println("Done reading cards at " + i);
+                System.out.println("File Name: " + fileName);
+                throw ex;
+            }
+            
         }
     }
 }
