@@ -626,10 +626,13 @@ public class CardGame extends Application {
         
         System.out.print("Save Num of Names: " + officialPlayerList.size());
 
-         for (int i = 0; i < officialPlayerList.size(); i++) {
-             Player tempPlayer = officialPlayerList.pop();          //This   
-             outputFile.writeObject(tempPlayer);     //This              
+        outputFile.writeObject(officialPlayerList);
+        /*
+        for (int i = 0; i < officialPlayerList.size(); i++) {
+            Player tempPlayer = officialPlayerList.pop();          //This   
+            outputFile.writeObject(tempPlayer);     //This              
             }           
+         //*/
          outputFile.close();
     }
     
@@ -638,22 +641,29 @@ public class CardGame extends Application {
       try{
         readOnce = 1;
         FileInputStream fStream = new FileInputStream("PlayerReport.dat");
-        ObjectInputStream inputStream = new ObjectInputStream(fStream);                 
+        ObjectInputStream inputStream = new ObjectInputStream(fStream);  
+        
         try
         {
             while (true)
             {
-                Player tempPlayer = (Player) inputStream.readObject();
-                officialPlayerList.push(tempPlayer);              
+                officialPlayerList = (Stack<Player>)inputStream.readObject();
+                /*
+                Object temp = inputStream.readObject();
+                System.out.println(temp);
+                Player tempPlayer = (Player) temp;
+                System.out.println(tempPlayer);
+                officialPlayerList.push(tempPlayer);
+                */
             }        
         }       
          catch(java.io.EOFException ex)
-            {
+        {
                 System.out.println("Read Num of names: " + officialPlayerList.size());
                 System.out.println("End of file");
                 inputStream.close();
                 return;
-            }
+        }
       }
       catch(FileNotFoundException ex)
       {
