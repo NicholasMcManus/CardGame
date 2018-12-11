@@ -1,11 +1,10 @@
-
 /*
  * file name: CardGame.java
  * programmer name: Nick McManus
  * date created: 10-18-2018
- * date of last revision: 
- * details of last revision:
- * short description: 
+ * date of last revision: 12/11/2018
+ * details of last revision: Serialized the entire stack to make stuff work
+ * short description: Run the main workings of the Matching Game
  */
 package cardgame;
 
@@ -19,8 +18,6 @@ import java.util.ArrayList;
 import javafx.util.Duration;
 import java.util.Random;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -54,13 +51,14 @@ public class CardGame extends Application {
     BorderPane mainMenuPane;
     Label mainMenuLabel;
     VBox playerOptions, labelBox;
-    int rowDeck = 2, columnDeck = 2, index = 0, readOnce = 0;
+    int rowDeck = 2, columnDeck = 2, index = 0;
     Scene scene;    
     String deckType, playerName;    
-    ObservableList<String> playersList = FXCollections.observableArrayList("Player1", "Player2", "Player3");    
+    ObservableList<String> playersList;
     Stack<Player> officialPlayerList = new Stack<>();
     Button cards [][];
     String defaultFolder = "card";
+    
     //setting the deck to default deck which can be changed in options
     Deck myDeck;
     
@@ -68,10 +66,14 @@ public class CardGame extends Application {
     
     
     @Override    
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException, ClassNotFoundException {
         
-
+        //Declare the deck to play with
         myDeck = new Deck();
+        
+        //See if there are players to read
+        readData();
+        
         try{
             myDeck.buildDeck(defaultFolder);
         }
@@ -79,12 +81,14 @@ public class CardGame extends Application {
             System.out.println("File Not Found Exception while building deck");
         }
         
-        
+        //Create the look and feel of the menu
         mainMenuPane = new BorderPane();        
         mainMenuPane.setStyle("-fx-background-color: Green");
         mainMenuLabel = new Label("Matching Game");
         mainMenuLabel.setFont(new Font("Arial", 69));        
-        playerOptions = new VBox(20);        
+        playerOptions = new VBox(20);     
+        
+        //Create the buttons that reside on the main menu
         Button startGameButton = new Button("Start Game");
         startGameButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -93,15 +97,17 @@ public class CardGame extends Application {
               startGame();
             }
         });
+        
         Button leaderBoardButton = new Button("Leaderboard");
         leaderBoardButton.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
             public void handle(ActionEvent event) {
-                leaderboardScreen();
+                leaderboardScreen(); 
             }
         
         });
+        
         Button optionsButton = new Button("  Options  ");
         optionsButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -110,6 +116,7 @@ public class CardGame extends Application {
                 optionsScreen();
             }
         });
+        
         Button exitGameButton = new Button("Exit Game");
         exitGameButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -123,8 +130,8 @@ public class CardGame extends Application {
                 Platform.exit();
                 System.exit(0);
             }
-        
         });
+        
         mainMenuLabel.setAlignment(Pos.CENTER);
         labelBox = new VBox(10);
         labelBox.getChildren().add(mainMenuLabel);
@@ -149,13 +156,23 @@ public class CardGame extends Application {
         launch(args);
     }
     
+    /**
+     * Start the matching game
+     */
     public void startGame()
     {        
         setDiffficulty();        
     }
     
+    /**
+     * Create and display the leader board
+     */
     public void leaderboardScreen()
-    {
+    {        
+        //Create an arraylist called playerlist
+        ArrayList<Player> playerList = new ArrayList(officialPlayerList);
+        
+        //Create the return button
         Button returnButton = new Button("Return");        
         returnButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -169,9 +186,12 @@ public class CardGame extends Application {
         });
         returnButton.setAlignment(Pos.BOTTOM_LEFT);                         
         
+        //Make the title look fabulous
         DropShadow leaderboardLabel = new DropShadow();
         leaderboardLabel.setOffsetY(3.0f);
         leaderboardLabel.setColor(Color.color(0.4f, 0.4f, 0.4f));
+        
+        //Actually make words appear
         Text t = new Text();
         t.setEffect(leaderboardLabel);
         t.setCache(true);
@@ -181,15 +201,23 @@ public class CardGame extends Application {
         t.setText("High Scores");
         t.setFont(Font.font(null, FontWeight.BOLD, 69));
         
+        //Make the scoreboard using a class designed to do such things
         HBox boardBox = new HBox(10);               
-        ScoreBoardGui scoreTable = new ScoreBoardGui();
+        ScoreBoardGui scoreTable = new ScoreBoardGui(playerList);
         boardBox.getChildren().add(scoreTable);
         boardBox.setAlignment(Pos.BOTTOM_CENTER);
         
+        //Add the text for the title
         VBox titleBox = new VBox(10);
         titleBox.getChildren().add(t);
         titleBox.setAlignment(Pos.CENTER);
         
+        //Make the internal scoreboard look nice
+        scoreTable.setHgap(40);
+        scoreTable.setFont(Font.font(20));
+        scoreTable.setColor(Color.BLUE);
+        
+        //Finalize the scoreboard
         mainMenuPane.getChildren().clear();
         mainMenuPane.setStyle("-fx-background-color: Orange;");
         mainMenuPane.setTop(titleBox);
@@ -198,8 +226,12 @@ public class CardGame extends Application {
         
     }
     
+    /**
+     * Create a method to display the option screen
+     */
     public void optionsScreen()
     {
+        //Add the return button to the option screen
         Button returnButton = new Button("Return");                
         returnButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -213,9 +245,12 @@ public class CardGame extends Application {
         });
         returnButton.setAlignment(Pos.BOTTOM_LEFT);      
         
+        //Make the title look pretty
         DropShadow optionsLabel = new DropShadow();       
         optionsLabel.setOffsetY(3.0f);
         optionsLabel.setColor(Color.color(0.4f, 0.4f, 0.4f));
+        
+        //Create the title
         Text t = new Text();
         t.setEffect(optionsLabel);
         t.setCache(true);
@@ -227,6 +262,7 @@ public class CardGame extends Application {
         
         VBox optionsVBox = new VBox(10);
         
+        //Make a deck modification button
         Button deckOptionButton = new Button("  Deck  ");
         deckOptionButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -235,23 +271,22 @@ public class CardGame extends Application {
                 getDeckOptions();
             }            
         });
+        
+        //Make a player option button
         Button playerOptionButton = new Button("  Player  ");
         playerOptionButton.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
             public void handle(ActionEvent event) {
-                try {
                     getPlayerOptions();
-                } catch (IOException ex) {
-                    Logger.getLogger(CardGame.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(CardGame.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }        
         });      
+        
+        //Add stuff to the optionPane
         optionsVBox.getChildren().addAll(deckOptionButton,playerOptionButton);                        
         optionsVBox.setAlignment(Pos.CENTER);
         
+        //Make and add a title
         VBox titleBox = new VBox(10);
         titleBox.getChildren().add(t);
         titleBox.setAlignment(Pos.CENTER);
@@ -264,65 +299,82 @@ public class CardGame extends Application {
         
     }
     
-    public void getDeckOptions()
-    {        
-      Button applyDeckType = new Button("Apply");
-      ObservableList<String> deckList = FXCollections.observableArrayList(
-    	"Original Deck", "Second Deck", "Third Deck");      
-    	final ComboBox deckComboBox = new ComboBox(deckList);
-        mainMenuPane.setCenter(deckComboBox);      
+    /**
+     * Make the stuff that goes on the deck pane
+     */
+    public void getDeckOptions() {
+        //Make the deck option box
+        Button applyDeckType = new Button("Apply");
+
+        ObservableList<String> deckList = FXCollections.observableArrayList(
+                "Original Deck", "Second Deck", "Third Deck");
+
+        final ComboBox deckComboBox = new ComboBox(deckList);
+        mainMenuPane.setCenter(deckComboBox);
         mainMenuPane.setRight(applyDeckType);
-        applyDeckType.setOnAction(new EventHandler<ActionEvent>(){
-          @Override
-          public void handle(ActionEvent event) {
-            deckType = deckComboBox.getValue().toString();      
-          }
-      });
         
+        //Setup the apply deck button
+        applyDeckType.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                deckType = deckComboBox.getValue().toString();
+            }
+        });
     }
     
-    public void getPlayerOptions() throws IOException, ClassNotFoundException
-    {
-       HBox playerOptionsBox = new HBox(20);
-       TextField textFieldName = new TextField();
-       Button applyNameButton = new Button("Apply");   
-       
-        if(readOnce == 0)
-            readData();
-        
-       playersList.clear();
-        
-        for (Player current:officialPlayerList) {
+    /**
+     * Make the player option button from the main menu work
+     */
+    public void getPlayerOptions() {
+
+        //Start with some boxes and fields
+        HBox playerOptionsBox = new HBox(20);
+        TextField textFieldName = new TextField();
+        Button applyNameButton = new Button("Apply");
+
+        //Make sure nothing is lurking in the old playerList
+        playersList.clear();
+
+        for (Player current : officialPlayerList) {
+            //Fill the playerlist with new values
             playersList.add(current.getName());
-        }      
-               
-       ComboBox playerComboBox = new ComboBox(playersList); 
-       
-       Button addNameButton = new Button("Add Name");
-       addNameButton.setOnAction(new EventHandler<ActionEvent>(){
-           @Override
-           public void handle(ActionEvent event) {
-              playersList.add(String.valueOf(textFieldName.getText()));              
-              officialPlayerList.push(new Player(String.valueOf(textFieldName.getText())));
-           }
-       });       
-             
-       playerOptionsBox.getChildren().addAll(playerComboBox,textFieldName, addNameButton);
-       playerOptionsBox.setAlignment(Pos.CENTER);
-       
-       mainMenuPane.setCenter(playerOptionsBox);   
-       mainMenuPane.setRight(applyNameButton);
-       applyNameButton.setOnAction(new EventHandler<ActionEvent>(){
-           @Override
-           public void handle(ActionEvent event) {
-               playerName = playerComboBox.getValue().toString();
-           }
-       });
+        }
+
+        //Make a selection box
+        ComboBox playerComboBox = new ComboBox(playersList);
+
+        Button addNameButton = new Button("Add Name");
+        addNameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                playersList.add(String.valueOf(textFieldName.getText()));
+                officialPlayerList.push(new Player(String.valueOf(textFieldName.getText())));
+            }
+        });
+
+        //Add stuff that looks pretty
+        playerOptionsBox.getChildren().addAll(playerComboBox, textFieldName, addNameButton);
+        playerOptionsBox.setAlignment(Pos.CENTER);
+        mainMenuPane.setCenter(playerOptionsBox);
+        mainMenuPane.setRight(applyNameButton);
         
+        //Make the apply button actually do stuff
+        applyNameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                playerName = playerComboBox.getValue().toString();
+            }
+        });
+
     }
     
+    /**
+     * See if the player wants to make their lives difficult
+     * Its the difficulty select screen and I don't want to bore you
+     */
     public void setDiffficulty()
     {
+        //Make an easy box, which makes the game easy
         HBox difficultyBox = new HBox(10);
         Button easyButton = new Button("Easy");
         easyButton.setOnAction(new EventHandler<ActionEvent>()
@@ -332,6 +384,8 @@ public class CardGame extends Application {
                 setBoard(1);
             }
         });
+        
+        //Make a normal box, for the normal people
         Button mediumButton = new Button("Medium");
         mediumButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -340,6 +394,8 @@ public class CardGame extends Application {
                 setBoard(2);
             }
         });
+        
+        //Make a hard box, because some people are Papa Bear
          Button hardButton = new Button("Hard");
         hardButton.setOnAction(new EventHandler<ActionEvent>()
         {
@@ -348,14 +404,22 @@ public class CardGame extends Application {
                 setBoard(3);
             }
         });
+        
+        //Add all of the boxes to the same screen
         difficultyBox.getChildren().addAll(easyButton, mediumButton, hardButton);
         difficultyBox.setAlignment(Pos.CENTER);
         mainMenuPane.setCenter(difficultyBox);
-                    
     }
     
+    /**
+     * Make a board that actually does stuff
+     * @param difficulty The difficulty selected
+     */
     public void setBoard(int difficulty)
     {        
+        //Add in a lot of things that I don't have the drive to do right now
+        //Most of this is getting overhauled
+        //Except for the teddy bear, cause why not
         GridPane boardPane = new GridPane();
         Button returnButton = new Button("Return Main Menu");
         returnButton.setOnAction(new EventHandler<ActionEvent>()
@@ -608,6 +672,13 @@ public class CardGame extends Application {
         mainMenuPane.setBottom(bottomBox);                              
     }   
 
+    /**
+     * Create a method to resolve existential crises
+     * @param arr The array
+     * @param value The value to search for
+     * @param count How far to look in the array
+     * @return Whether or not the value already exists in the array
+     */
     public boolean exists(int arr[], int value, int count){
 
         for(int i = 0; i < count; i++){
@@ -618,57 +689,54 @@ public class CardGame extends Application {
     }
     
     
-    
-     public void saveData() throws FileNotFoundException, java.io.IOException    
+    /**
+     * Saving, Do Not Turn off the Power or Remove the Memory Card from Slot A
+     * @throws FileNotFoundException
+     * @throws java.io.IOException 
+     */
+    public void saveData() throws FileNotFoundException, java.io.IOException    
     {     
+        //Make some variables
         FileOutputStream fStream = new FileOutputStream("PlayerReport.dat"); 
         ObjectOutputStream outputFile = new ObjectOutputStream(fStream);         
         
+        //Record how many names that are being saved for accounting purposes
         System.out.print("Save Num of Names: " + officialPlayerList.size());
 
+        //Write it down
         outputFile.writeObject(officialPlayerList);
-        /*
-        for (int i = 0; i < officialPlayerList.size(); i++) {
-            Player tempPlayer = officialPlayerList.pop();          //This   
-            outputFile.writeObject(tempPlayer);     //This              
-            }           
-         //*/
+        
+        //Close the notebook
          outputFile.close();
     }
     
-    public void readData() throws java.io.IOException, ClassNotFoundException
-    {
-      try{
-        readOnce = 1;
-        FileInputStream fStream = new FileInputStream("PlayerReport.dat");
-        ObjectInputStream inputStream = new ObjectInputStream(fStream);  
-        
-        try
-        {
-            while (true)
-            {
-                officialPlayerList = (Stack<Player>)inputStream.readObject();
-                /*
-                Object temp = inputStream.readObject();
-                System.out.println(temp);
-                Player tempPlayer = (Player) temp;
-                System.out.println(tempPlayer);
-                officialPlayerList.push(tempPlayer);
-                */
-            }        
-        }       
-         catch(java.io.EOFException ex)
-        {
+    /**
+     * Reading, its kind of like saving, but in the opposite direction
+     * @throws java.io.IOException
+     * @throws ClassNotFoundException 
+     */
+    public void readData() throws java.io.IOException, ClassNotFoundException {
+        //Make sure something can be done
+        try {            
+            //Try to make some variables
+            FileInputStream fStream = new FileInputStream("PlayerReport.dat");
+            ObjectInputStream inputStream = new ObjectInputStream(fStream);
+
+            //Try to get stuff from the variables
+            try {
+                //While there is stuff for me to read
+                while (true) {
+                    officialPlayerList = (Stack<Player>) inputStream.readObject();
+                }
+            } catch (java.io.EOFException ex) {
+                //When I run out of stuff to read
                 System.out.println("Read Num of names: " + officialPlayerList.size());
                 System.out.println("End of file");
                 inputStream.close();
-                return;
+            }
+        } catch (FileNotFoundException ex) {
+            //If someone misplaced my reading material
+            System.out.print("File Not Found, New Data Will be Saved Later");
         }
-      }
-      catch(FileNotFoundException ex)
-      {
-          System.out.print("Not Found");
-          return;
-      }
     }       
 }
