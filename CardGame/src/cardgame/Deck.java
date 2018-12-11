@@ -46,6 +46,21 @@ public class Deck implements java.io.Serializable{
         readDeck(fileName);
     }
     
+    /**
+     * Method for adding cards that already exist to a deck
+     * @param newCard The card to be added to the deck
+     * @return If the operation was successful
+     */
+    public boolean addCard(Card newCard)
+    {
+        if(!deck.contains(newCard))
+        {
+            deck.add(newCard);
+            return true;
+        }
+        return false;
+    }
+    
     public void addCard(String suit, String name, int value)
     {
         for (int i = 0; i < deck.size(); i++){
