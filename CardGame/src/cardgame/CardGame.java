@@ -9,12 +9,11 @@
  */
 package cardgame;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import javafx.util.Duration;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -51,14 +50,30 @@ public class CardGame extends Application {
     BorderPane mainMenuPane;
     Label mainMenuLabel;
     VBox playerOptions, labelBox;
-    int rowDeck = 2, colummDeck = 2, index = 0;
+    int rowDeck = 2, columnDeck = 2, index = 0;
     Scene scene;    
     String deckType, playerName;    
     ObservableList<String> playersList = FXCollections.observableArrayList("Player1", "Player2", "Player3");    
     Button cards [][];
+    String defaultFolder = "card";
+    //setting the deck to default deck which can be changed in options
+    Deck myDeck;
+    
+    
+    
     
     @Override    
     public void start(Stage primaryStage) {
+        
+
+        myDeck = new Deck();
+        try{
+            myDeck.buildDeck(defaultFolder);
+        }
+        catch(FileNotFoundException e){
+            System.out.println("File Not Found Exception while building deck");
+        };
+        
         
         mainMenuPane = new BorderPane();        
         mainMenuPane.setStyle("-fx-background-color: Green");
@@ -131,7 +146,7 @@ public class CardGame extends Application {
     
     public void leaderboardScreen()
     {
-        Button returnButton = new Button("Return");  
+        Button returnButton = new Button("Return");        
         returnButton.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
@@ -158,10 +173,6 @@ public class CardGame extends Application {
         
         HBox boardBox = new HBox(10);               
         ScoreBoardGui scoreTable = new ScoreBoardGui();
-        scoreTable.setHgap(40);
-        scoreTable.setFont(Font.font(20));
-        //scoreTable.setCSS("-fx-base: white; -fx-font-size: 20px;");
-        scoreTable.setColor(Color.BLUE);
         boardBox.getChildren().add(scoreTable);
         boardBox.setAlignment(Pos.BOTTOM_CENTER);
         
@@ -338,47 +349,72 @@ public class CardGame extends Application {
         switch (difficulty) {
             case 1:
                 rowDeck = 2;
-                colummDeck = 2;
+                columnDeck = 2;
                 break;
             case 2:
                 rowDeck = 3;
-                colummDeck = 4;
+                columnDeck = 4;
                 break;
             case 3:
                 rowDeck = 4;
-                colummDeck = 8;
+                columnDeck = 8;
                 break;
             default:
                 break;
         }
         
-        cards = new Button[rowDeck][colummDeck];   
-        
-        int totalCards = (rowDeck * colummDeck)/2, found = 0; 
+        ArrayList<Card> selectedDeck = new ArrayList();
+        cards = new Button[rowDeck][columnDeck];
+        int totalCards = (rowDeck * columnDeck)/2;
         int arrayCards[] = new int[totalCards]; 
-        int[][] cardsInt = new int[rowDeck][colummDeck];
+        int[][] cardsInt = new int[rowDeck][columnDeck];
+        Card[][] cards2dArray = new Card[rowDeck][columnDeck];
         Random rand = new Random();
-        boolean valid = false;
+        
         index = -1;
-        
-//        for (int i = 0; i < totalCards; i++) {
-//            while(!valid)
-//            {    
-//                int choice = rand.nextInt(54)+1;
-//                for (int j = 0; j < totalCards; j++) {
-//                    if(arrayCards[j] == choice)                    
-//                        valid = false;                    
-//                }            
-//                valid = true;
-//                if(valid == true)
-//                    arrayCards[i] = choice;
-//            }            
-//        }
-        
+
         int count = 0;
         
+        
         do{
-            int choice = rand.nextInt(54)+1 ;
+            int choice = rand.nextInt(52)+1;
+            if(selectedDeck.indexOf(myDeck.getDeck().get(choice)) == -1)
+                selectedDeck.add(myDeck.getDeck().get(choice));
+            
+        }while(selectedDeck.size()!= totalCards);
+        
+        
+        for (int i = 0; i < rowDeck; i++){
+            for (int j = 0; j < columnDeck; j++)
+                cards2dArray[i][j] = new Card("N/A", "N/A", 0);
+        }
+        
+        count = 0;
+        
+        int iIndex, jIndex;
+        
+        //goes through eahc element in selectedDeck and adds each element to 
+        //2 random positions in the 2-dim array
+        for (int i = 0; i < selectedDeck.size(); i++){
+            do{
+                iIndex = rand.nextInt(rowDeck);
+                jIndex = rand.nextInt(columnDeck);
+            }while (!cards2dArray[iIndex][jIndex].getSuit().equals("N/A"));
+            
+            cards2dArray[iIndex][jIndex] = selectedDeck.get(i);
+            
+            do{
+                iIndex = rand.nextInt(rowDeck);
+                jIndex = rand.nextInt(columnDeck);
+            }while (!cards2dArray[iIndex][jIndex].getSuit().equals("N/A"));
+            
+            cards2dArray[iIndex][jIndex] = selectedDeck.get(i);
+            }
+        
+        
+        //adds random integers between 1-52 to arrayCards
+        do{
+            int choice = rand.nextInt(52)+1;
             if(!exists(arrayCards, choice, count)){
                 arrayCards[count] = choice;
                 count++;
@@ -386,24 +422,31 @@ public class CardGame extends Application {
             
         }while(count != totalCards);
         
-        System.out.println("Row deck is " + rowDeck + "and culumn deck is " + colummDeck);
+        
+        
+        System.out.println("Row deck is " + rowDeck + "and column deck is " + columnDeck);
         System.out.println("This is the used cards in the deck ");
         for(int i = 0; i < totalCards; i++){
             System.out.print(arrayCards[i] + " ");
         }
         System.out.println();
         
+        //puts zeros in two-dimensional  array
+        
+        // ex
+        //      0   0   0   0
+        //      0   0   0   0   
+        //      0   0   0   0
+        //      0   0   0   0
+        
         for (int i = 0; i < rowDeck; i++){
-            for (int j = 0; j < colummDeck; j++)
+            for (int j = 0; j < columnDeck; j++)
                 cardsInt[i][j] = 0;
         }
         
-        
         count = 0;
-        while (count != (rowDeck * colummDeck)/2){
+        while (count != (rowDeck * columnDeck)/2){ // count keeps track that all elements in the array have value other than 0
             int choice;
-            int iIndex;
-            int jIndex;
             do{
                 choice = rand.nextInt(arrayCards.length);
             }while (arrayCards[choice] == 0);
@@ -412,7 +455,7 @@ public class CardGame extends Application {
             
             do {
                iIndex = rand.nextInt(rowDeck);
-               jIndex = rand.nextInt(colummDeck);
+               jIndex = rand.nextInt(columnDeck);
             }while(cardsInt[iIndex][jIndex] != 0);
             
             System.out.println("iIndex is" + iIndex);
@@ -422,7 +465,7 @@ public class CardGame extends Application {
             
             do {
                iIndex = rand.nextInt(rowDeck);
-               jIndex = rand.nextInt(colummDeck);
+               jIndex = rand.nextInt(columnDeck);
                
             }while(cardsInt[iIndex][jIndex] != 0);
             System.out.println("the second iIndex is" + iIndex);
@@ -436,7 +479,7 @@ public class CardGame extends Application {
             
             System.out.println("This is what we have in it so far");
             for (int i = 0; i < rowDeck; i++){
-                for (int j = 0; j < colummDeck; j++)
+                for (int j = 0; j < columnDeck; j++)
                     System.out.print(cardsInt[i][j] + " ");
                 System.out.println();
             }
@@ -445,38 +488,44 @@ public class CardGame extends Application {
 
         ArrayList<Integer> rows = new ArrayList(2);
         ArrayList<Integer> columns = new ArrayList(2);
-        ArrayList<Integer> matches = new ArrayList((rowDeck*colummDeck)/2);
+        ArrayList<Integer> matches = new ArrayList((rowDeck*columnDeck)/2);
          //int[] rows = new int[2];
         //int[] columns = new int[2];
         
         
         for (int i = 0; i < rowDeck; i++) {
-            for (int j = 0; j < colummDeck; j++) {                
+            for (int j = 0; j < columnDeck; j++) {                
                 //System.out.print(i+ "" + j + " ");     
                 cards[i][j] = new Button("");
                 cards[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));                
                 final int row = i;
-                final int columm = j;
-                int count2 = 0;
+                final int column = j;
                 cards[i][j].setOnAction(new EventHandler <ActionEvent>(){                    
                     @Override
                     public void handle(ActionEvent event) {
                         
-                        cards[row][columm].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/"+cardsInt[row][columm] +".png"))));
-                        System.out.println("row is " + row + " column is" + columm);
+                        cards[row][column].setGraphic(cards2dArray[row][column].getFront());
+                        //cards[row][column].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/"+cardsInt[row][column] +".png"))));
+                        System.out.println("row is " + row + " column is" + column);
                         
                         rows.add(row);
-                        columns.add(columm);
+                        columns.add(column);
                         
-                        cards[row][columm].setDisable(true);
+                        cards[row][column].setDisable(true);
                         
                         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e ->{
-                        if (rows.size() > 1){
-                            if (cardsInt[rows.get(0)][columns.get(0)] == cardsInt [rows.get(1)][columns.get(1)]){
+                        if (rows.get(1) != null){
+                            
+                            if(cards2dArray[rows.get(0)][columns.get(0)].equals(cards2dArray[rows.get(1)][columns.get(1)])){
                                 cards[rows.get(0)][columns.get(0)].setDisable(true);
                                 cards[rows.get(1)][columns.get(1)].setDisable(true);
                                 matches.add(1);
                             }
+//                            if (cardsInt[rows.get(0)][columns.get(0)] == cardsInt [rows.get(1)][columns.get(1)]){
+//                                cards[rows.get(0)][columns.get(0)].setDisable(true);
+//                                cards[rows.get(1)][columns.get(1)].setDisable(true);
+//                                matches.add(1);
+//                            }
                                 
                             else {
                                 cards[rows.get(0)][columns.get(0)].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
@@ -486,16 +535,10 @@ public class CardGame extends Application {
                                 cards[rows.get(1)][columns.get(1)].setDisable(false);
                             }
                             
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException ex) {
-                                //Logger.getLogger(CardGame.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            
                             rows.clear();
                             columns.clear();
                             
-                            if (matches.size() == (rowDeck*colummDeck/2)){
+                            if (matches.get(rowDeck*columnDeck/2 - 1 ) == 1){
                             
                                 BorderPane pane = new BorderPane(); 
                                 pane.setStyle("-fx-background-color: Purple");
@@ -520,7 +563,7 @@ public class CardGame extends Application {
         }
         
         for (int i = 0; i < rowDeck; i++) {
-            for (int j = 0; j < colummDeck; j++) {
+            for (int j = 0; j < columnDeck; j++) {
                 boardPane.add(cards[i][j],j,i);
             }
         }
@@ -537,7 +580,7 @@ public class CardGame extends Application {
         mainMenuPane.setCenter(boardPane);
         mainMenuPane.setBottom(bottomBox);                              
     }
-
+   
 
     public boolean exists(int arr[], int value, int count){
 
