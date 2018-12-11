@@ -64,30 +64,30 @@ public class Deck implements java.io.Serializable{
      * @param cardFront The path to the image
      * @throws FileNotFoundException 
      */
-    public void addCard(String cardFront) throws FileNotFoundException
-    {
-//       for (int i = 0; i < deck.size(); i++){
-//           if (deck.get(i).getFront() == new ImageView(cardFront)){
-//               System.out.println("card already exists");
-//               return;
-//           }
-//       }
-       deck.add(new Card(cardFront, defaultbackCard));
-    }
-    
-    /**
-     * Method for adding cards that already exist to a deck
-     * @param newCard The card to be added to the deck
-     * @return If the operation was successful
-     */
-    public boolean addCard(Card newCard)
-    {
-        if(!deck.contains(newCard))
-        {
-            deck.add(newCard);
-            return true;
+    public void addCard(String cardFront) throws FileNotFoundException{
+
+        int value; 
+        String suit;
+        
+        value = Integer.valueOf(cardFront.substring(cardFront.indexOf("/"), cardFront.indexOf(".")));
+        
+        if (value <= 13)
+            suit = "spades";
+        else if (value <= 26){
+            suit = "hearts";
+            value -= 13;
         }
-        return false;
+        else if (value <= 39){
+            suit = "diamonds";
+            value -= 26;
+        }
+        else {
+            suit = "clubs";
+            value -= 39;
+        }
+        
+       
+       deck.add(new Card(cardFront, defaultbackCard, suit, value));
     }
     
     /**
@@ -122,5 +122,11 @@ public class Deck implements java.io.Serializable{
         
         this.deck = ((Deck)inStream.readObject()).getDeck();
         
+    }
+    
+    public void buildDeck(String folder) throws FileNotFoundException{
+        for (int i = 0; i < 52; i++){
+            this.addCard(folder +"/"+ i + ".png");
+        }
     }
 }
