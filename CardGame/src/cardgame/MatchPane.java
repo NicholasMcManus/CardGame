@@ -12,7 +12,6 @@ package cardgame;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -22,11 +21,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -165,20 +161,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         //Containers to make things work
         int[][] cardsInt = new int[ROW][COL];
         Card[][] cardArray = new Card[ROW][COL];        
-        
-        //Add enough cards to do a matching game with a certain number of cards
-        /**Depreciated**
-        do{
-            int choice = rand.nextInt(54)+1 ;
-            if(!exists(arrayCards, choice, count)){
-                //If a card is not represented in the array, add it
-                arrayCards[count] = choice;
-                count++;
-            }
-        }while(count != totalCards);
-        //*/
-        
-        //New Implementation
+
         //Fill the Card Array from the ArrayList
         System.out.println("ROW: " + ROW + " COL: " + COL);
         int cardCount = 0;
@@ -192,87 +175,11 @@ public class MatchPane extends javafx.scene.layout.GridPane{
             }
         }
         
-        /*** Depreciated***
-        //Debug code: Print the currently used cards from the array
-        System.out.println("Row deck is " + ROW + "and column deck is " + COL);
-        System.out.println("This is the used cards in the deck ");
-        for(int i = 0; i < totalCards; i++){
-            System.out.print(arrayCards[i] + " ");
-        }
-        System.out.println();
-        
-        //Fill the representitive array with value 0
-        for (int i = 0; i < ROW; i++){
-            for (int j = 0; j < COL; j++)
-                cardsInt[i][j] = 0;
-        }
-        //*/
-        
-        //New Implentation
         //Fill the representitive array with the value from the card
         for (int i = 0; i < ROW; i++){
             for (int j = 0; j < COL; j++)
                 cardsInt[i][j] = cardArray[i][j].getValue();
         }
-        
-        //Put cards into random places
-        /*** Depreciated ***
-        count = 0;
-        while (count != (ROW * COL)/2)
-        {
-            //Variable initialization
-            int choice;
-            int iIndex;
-            int jIndex;
-            
-            //Choose from a card from the selected cards
-            do{
-                choice = rand.nextInt(arrayCards.length);
-            }while (arrayCards[choice] == 0);
-            
-            System.out.println("the choice picked from the used cards is " + arrayCards[choice]);
-            
-            //Determine where to put the card as long as it is not occupied
-            do {
-               iIndex = rand.nextInt(ROW);
-               jIndex = rand.nextInt(COL);
-            }while(cardsInt[iIndex][jIndex] != 0);
-            
-            System.out.println("iIndex is " + iIndex);
-            System.out.println("jIndex is " + jIndex);
-            
-            //Place the card in the unoccupied section
-            cardsInt[iIndex][jIndex] = arrayCards[choice];
-            
-            //Find the index for the next card's placement
-            do {
-               iIndex = rand.nextInt(ROW);
-               jIndex = rand.nextInt(COL);
-               
-            }while(cardsInt[iIndex][jIndex] != 0);
-            System.out.println("the second iIndex is " + iIndex);
-            System.out.println("the second jIndex is " + jIndex);
-            
-            cardsInt[iIndex][jIndex] = arrayCards[choice];
-            
-            //Indicate that the card has been used
-            arrayCards[choice] = 0;
-            
-            //Debug: How many cards have been chosen
-            count++;
-            System.out.println("count is "+ count);
-            
-            //Debug: Show the current board
-            System.out.println("This is what we have in it so far ");
-            
-            //Cheating code for future reference
-            for (int i = 0; i < ROW; i++){
-                for (int j = 0; j < COL; j++)
-                    System.out.print(cardsInt[i][j] + " ");
-                System.out.println();
-            }
-        }
-        ***/
         
         //Containers to handle matches
         ArrayList<Integer> rows = new ArrayList(2);
@@ -286,8 +193,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
             {                   
                 cards[i][j] = new Button("");
                 
-                //Set card as the back graphic
-                //cards[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));                
+                //Set card as the back graphic               
                 cards[i][j].setGraphic(new ImageView(cardArray[i][j].getBack().getImage()));
                 
                 
@@ -301,7 +207,6 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                     public void handle(ActionEvent event) {
                         
                         //Set the card as its "face"
-                        //cards[row][column].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/"+cardsInt[row][column] +".png"))));
                         cards[row][column].setGraphic(new ImageView(cardArray[row][column].getFront().getImage()));
                         System.out.println("row is " + row + " column is " + column);
                         
@@ -318,10 +223,10 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                         //A match was made
                         if (rows.size() > 1){
                             if (cardsInt[rows.get(0)][columns.get(0)] == cardsInt [rows.get(1)][columns.get(1)]){
-                                //Not really needed as cards are already disabled
-                                //cards[rows.get(0)][columns.get(0)].setDisable(true);
-                                //cards[rows.get(1)][columns.get(1)].setDisable(true);
+                                
+                                //Indicate a match was made
                                 matches.add(1);
+                                
                                 //Add code to remove cards outside the bounds
                                 for(int i = 2; i < rows.size(); i++)
                                 {
@@ -331,11 +236,6 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                             }
                                 
                             else {
-                                //cards[rows.get(0)][columns.get(0)].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
-                                //cards[rows.get(1)][columns.get(1)].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
-                                
-                                //cards[rows.get(0)][columns.get(0)].setDisable(false);
-                                //cards[rows.get(1)][columns.get(1)].setDisable(false);
                                 
                                 //Add code to enable out of bounds cards
                                 for(int i = 0; i < rows.size(); i++)
@@ -348,7 +248,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                             try {
                                 Thread.sleep(500);
                             } catch (InterruptedException ex) {
-                                //Logger.getLogger(CardGame.class.getName()).log(Level.SEVERE, null, ex);
+                                //Catch the interruption
                             }
                             
                             //Make sure coords are clear after a match is checked for
@@ -393,6 +293,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         startTimer();
         
         /*
+        //Add this back in the main
         VBox informationBox = new VBox(10);
         Label playerLabel = new Label("Player: " + playerName);
         Label deckLabel = new Label("Deck: " + deckType);
