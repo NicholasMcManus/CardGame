@@ -9,11 +9,18 @@
  */
 package cardgame;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import javafx.util.Duration;
-import java.util.HashSet;
 import java.util.Random;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -28,12 +35,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -54,7 +58,7 @@ public class CardGame extends Application {
     Scene scene;    
     String deckType, playerName;    
     ObservableList<String> playersList = FXCollections.observableArrayList("Player1", "Player2", "Player3");    
-    Stack<Player> officialPlayerList = new Stack<Player>();
+    Stack<Player> officialPlayerList = new Stack<>();
     Button cards [][];
     String defaultFolder = "card";
     //setting the deck to default deck which can be changed in options
@@ -73,7 +77,7 @@ public class CardGame extends Application {
         }
         catch(FileNotFoundException e){
             System.out.println("File Not Found Exception while building deck");
-        };
+        }
         
         
         mainMenuPane = new BorderPane();        
@@ -113,8 +117,8 @@ public class CardGame extends Application {
             public void handle(ActionEvent event) {
                  try {
                     saveData();
-                } catch (IOException ex) {
-                    Logger.getLogger(CardGame.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (java.io.IOException ex) {
+                     System.out.println("Your data could not be written to the file. Data loss possible.");
                 }
                 Platform.exit();
                 System.exit(0);
@@ -236,7 +240,13 @@ public class CardGame extends Application {
         {
             @Override
             public void handle(ActionEvent event) {
-             getPlayerOptions();
+                try {
+                    getPlayerOptions();
+                } catch (IOException ex) {
+                    Logger.getLogger(CardGame.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(CardGame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }        
         });      
         optionsVBox.getChildren().addAll(deckOptionButton,playerOptionButton);                        
@@ -271,7 +281,7 @@ public class CardGame extends Application {
         
     }
     
-    public void getPlayerOptions()
+    public void getPlayerOptions() throws IOException, ClassNotFoundException
     {
        HBox playerOptionsBox = new HBox(20);
        TextField textFieldName = new TextField();
@@ -284,12 +294,7 @@ public class CardGame extends Application {
        
         for (Player current:officialPlayerList) {
             playersList.add(current.getName());
-        }
-       
-       officialPlayerList.forEach((current) -> {
-           playersList.add(current.getName());           
-          
-        });
+        }      
                
        ComboBox playerComboBox = new ComboBox(playersList); 
        
@@ -614,7 +619,7 @@ public class CardGame extends Application {
     
     
     
-     public void saveData() throws FileNotFoundException, IOException    
+     public void saveData() throws FileNotFoundException, java.io.IOException    
     {     
         FileOutputStream fStream = new FileOutputStream("PlayerReport.dat"); 
         ObjectOutputStream outputFile = new ObjectOutputStream(fStream);         
@@ -628,7 +633,7 @@ public class CardGame extends Application {
          outputFile.close();
     }
     
-    public void readData() throws IOException, ClassNotFoundException
+    public void readData() throws java.io.IOException, ClassNotFoundException
     {
       try{
         readOnce = 1;
@@ -644,18 +649,16 @@ public class CardGame extends Application {
                 readOnce++; //Change
             }        
         }       
-         catch(EOFException ex)
+         catch(java.io.EOFException ex)
             {
                 System.out.println("Read Num of names: " + officialPlayerList.size());
                 System.out.println("End of file");
                 inputStream.close();
-                return;
             }
       }
       catch(FileNotFoundException ex)
       {
           System.out.print("Not Found");
-          return;
       }
-}       
- 
+    }       
+}
