@@ -54,7 +54,7 @@ public class CardGame extends Application {
     int rowDeck = 2, columnDeck = 2, index = 0;
     Scene scene;    
     String deckType, playerName;    
-    ObservableList<String> playersList;
+    ObservableList<String> playersList = FXCollections.observableArrayList();
     Stack<Player> officialPlayerList = new Stack<>();
     Button cards [][];
     String defaultFolder = "card";
@@ -333,7 +333,8 @@ public class CardGame extends Application {
         Button applyNameButton = new Button("Apply");
 
         //Make sure nothing is lurking in the old playerList
-        playersList.clear();
+        if(playersList != null)
+            playersList.clear();
 
         for (Player current : officialPlayerList) {
             //Fill the playerlist with new values
@@ -701,7 +702,7 @@ public class CardGame extends Application {
         ObjectOutputStream outputFile = new ObjectOutputStream(fStream);         
         
         //Record how many names that are being saved for accounting purposes
-        System.out.print("Save Num of Names: " + officialPlayerList.size());
+        System.out.println("Save Num of Names: " + officialPlayerList.size());
 
         //Write it down
         outputFile.writeObject(officialPlayerList);
