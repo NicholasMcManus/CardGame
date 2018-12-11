@@ -497,7 +497,7 @@ public class CardGame extends Application {
             for (int j = 0; j < columnDeck; j++) {                
                 //System.out.print(i+ "" + j + " ");     
                 cards[i][j] = new Button("");
-                cards[i][j].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));                
+                cards[i][j].setGraphic(cards2dArray[i][j].getBack());                
                 final int row = i;
                 final int column = j;
                 cards[i][j].setOnAction(new EventHandler <ActionEvent>(){                    
@@ -528,8 +528,8 @@ public class CardGame extends Application {
 //                            }
                                 
                             else {
-                                cards[rows.get(0)][columns.get(0)].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
-                                cards[rows.get(1)][columns.get(1)].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/b1fv.png"))));
+                                cards[rows.get(0)][columns.get(0)].setGraphic(cards2dArray[row][column].getBack());
+                                cards[rows.get(1)][columns.get(1)].setGraphic(cards2dArray[row][column].getBack());
                                 
                                 cards[rows.get(0)][columns.get(0)].setDisable(false);
                                 cards[rows.get(1)][columns.get(1)].setDisable(false);
