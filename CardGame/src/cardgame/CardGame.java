@@ -50,10 +50,11 @@ public class CardGame extends Application {
     BorderPane mainMenuPane;
     Label mainMenuLabel;
     VBox playerOptions, labelBox;
-    int rowDeck = 2, columnDeck = 2, index = 0;
+    int rowDeck = 2, columnDeck = 2, index = 0, readOnce = 0;
     Scene scene;    
     String deckType, playerName;    
     ObservableList<String> playersList = FXCollections.observableArrayList("Player1", "Player2", "Player3");    
+    Stack<Player> officialPlayerList = new Stack<Player>();
     Button cards [][];
     String defaultFolder = "card";
     //setting the deck to default deck which can be changed in options
@@ -110,6 +111,11 @@ public class CardGame extends Application {
         {
             @Override
             public void handle(ActionEvent event) {
+                 try {
+                    saveData();
+                } catch (IOException ex) {
+                    Logger.getLogger(CardGame.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 Platform.exit();
                 System.exit(0);
             }
@@ -269,7 +275,22 @@ public class CardGame extends Application {
     {
        HBox playerOptionsBox = new HBox(20);
        TextField textFieldName = new TextField();
-       Button applyNameButton = new Button("Apply");       
+       Button applyNameButton = new Button("Apply");   
+       
+        if(readOnce == 0)
+            readData();
+       playersList.clear();
+              
+       
+        for (Player current:officialPlayerList) {
+            playersList.add(current.getName());
+        }
+       
+       officialPlayerList.forEach((current) -> {
+           playersList.add(current.getName());           
+          
+        });
+               
        ComboBox playerComboBox = new ComboBox(playersList); 
        
        Button addNameButton = new Button("Add Name");
@@ -590,5 +611,51 @@ public class CardGame extends Application {
         }
         return false;
     }
+    
+    
+    
+     public void saveData() throws FileNotFoundException, IOException    
+    {     
+        FileOutputStream fStream = new FileOutputStream("PlayerReport.dat"); 
+        ObjectOutputStream outputFile = new ObjectOutputStream(fStream);         
+        
+        System.out.print("Save Num of Names: " + officialPlayerList.size());
+
+         for (int i = 0; i < officialPlayerList.size(); i++) {
+             Player tempPlayer = officialPlayerList.pop();          //This   
+             outputFile.writeObject(tempPlayer);     //This              
+            }           
+         outputFile.close();
+    }
+    
+    public void readData() throws IOException, ClassNotFoundException
+    {
+      try{
+        readOnce = 1;
+        FileInputStream fStream = new FileInputStream("PlayerReport.dat");
+        ObjectInputStream inputStream = new ObjectInputStream(fStream);                 
+        try
+        {
+            while (true)
+            {
+                Player tempPlayer = (Player) inputStream.readObject();
+                officialPlayerList.push(tempPlayer);
+                System.out.println("Name: " + readOnce); //Change
+                readOnce++; //Change
+            }        
+        }       
+         catch(EOFException ex)
+            {
+                System.out.println("Read Num of names: " + officialPlayerList.size());
+                System.out.println("End of file");
+                inputStream.close();
+                return;
+            }
+      }
+      catch(FileNotFoundException ex)
+      {
+          System.out.print("Not Found");
+          return;
+      }
 }       
  
