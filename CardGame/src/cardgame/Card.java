@@ -47,8 +47,8 @@ public class Card implements java.io.Serializable{
         this.cardName = toCopy.getName();
         this.cardSuit = toCopy.getSuit();
         this.cardValue = toCopy.getValue();
-        this.cardFront = toCopy.getFront();
-        this.cardBack = toCopy.getBack();
+        this.cardFront = new ImageView(toCopy.getFront().getImage());
+        this.cardBack = new ImageView(toCopy.getBack().getImage());
     }
      
     /**
