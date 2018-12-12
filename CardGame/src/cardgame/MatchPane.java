@@ -1,8 +1,8 @@
 /*
  * file name: MatchPane.java
- * programmer name: Nick McManus
+ * programmer name: Nick, Helia, Josue
  * date created: 12-05-2018
- * date of last revision: 12/09/2018
+ * date of last revision: 12/12/2018
  * details of last revision: Worked through algorithm to determine number of cards per set
  * short description: Make a class to handle creating a board, scoring, and interacting
  */
@@ -27,6 +27,7 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class MatchPane extends BorderPane{
+    //Class Variables
     private final int ROW, COL; //Defined in constructor
     private Date startTime, endTime;
     private GridPane cardPane = new GridPane();
@@ -34,8 +35,13 @@ public class MatchPane extends BorderPane{
     private Deck deck;
     public Button winButton = new Button("Next");
     
+    /**
+     * Construct a MatchPane window with the provided cards to create matches from
+     * @param deck Cards to be duplicated and turned into a matching game
+     */
     public MatchPane(Deck deck){
         
+        //Local variables
         this.deck = new Deck();
         startTime = new Date();
         endTime = new Date();
@@ -67,31 +73,42 @@ public class MatchPane extends BorderPane{
      */
     public static void checkClass(Deck list)
     {
+        //Local Variables
         double sqrt = Math.sqrt(list.getDeck().size());
         int rows = (int)sqrt;
         
+        //Show basic information
         System.out.println("Number of cards: " + list.getDeck().size());
         System.out.println("Square Root: " + sqrt);
         System.out.println("Base Rows: " + rows);
+        
+        //Determine Least common factors
         while(list.getDeck().size() % rows != 0)
             rows--;
         
+        //Show calcualted field
         System.out.println("Optimal Board: Rows: " + rows +
                 " Cols: " + list.getDeck().size()/rows);
         
         //Test building a match board
         int matchDeck = list.getDeck().size()*2, matchRows;
         
+        //Show number of cards
         System.out.println("Number of cards: " + matchDeck);
+        
+        //Update variables for new test
         sqrt = Math.sqrt(matchDeck);
         matchRows = (int)sqrt;
         
-        
+        //Show data again
         System.out.println("Square Root: " + sqrt);
         System.out.println("Base Rows: " + matchRows);
+        
+        //Calculate Least common factors
         while(matchDeck % matchRows != 0)
             matchRows--;
         
+        //Print the results
         System.out.println("Optimal Board: Rows: " + matchRows +
                 " Cols: " + matchDeck/matchRows);
         
@@ -241,7 +258,6 @@ public class MatchPane extends BorderPane{
                                 Label winLabel = new Label("Win Score: " + matchPoints());
                                 winLabel.setFont(Font.font("Verdana", 70));
                                 winLabel.setStyle("-fx-background-color: Yellow");
-                                //pane.getChildren().add(winLabel);
                                 accessPane.setTop(winLabel);
                                 accessPane.setLeft(winButton);
                             }
@@ -266,21 +282,6 @@ public class MatchPane extends BorderPane{
         }
         startTimer();
         this.setCenter(cardPane);
-        
-        /*
-        //Add this back in the main
-        VBox informationBox = new VBox(10);
-        Label playerLabel = new Label("Player: " + playerName);
-        Label deckLabel = new Label("Deck: " + deckType);
-        informationBox.getChildren().addAll(playerLabel, deckLabel);
-        
-        HBox bottomBox = new HBox(25);
-        bottomBox.getChildren().addAll(returnButton, informationBox);
-        bottomBox.setAlignment(Pos.CENTER);
-        
-        mainMenuPane.setCenter(boardPane);
-        mainMenuPane.setBottom(bottomBox);  
-        */
     }
     
     /**
