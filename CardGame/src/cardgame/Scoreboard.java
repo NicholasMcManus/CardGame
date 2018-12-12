@@ -13,9 +13,9 @@ package cardgame;
 import java.util.ArrayList;
 
 public class Scoreboard {
-    private ArrayList<Score> highScores;
-    private ArrayList<String> highScorePlayer;
-    
+    private ArrayList<Score> highScores; //ArrayList that stores Score objects
+    private ArrayList<String> highScorePlayer;//ArrayList that stores a String of the name of the highest score player's name
+    //Class variables
     private final int NUM_SCORES;
     
     /**
@@ -24,14 +24,14 @@ public class Scoreboard {
      * @param players A list containing a number of players to be used to construct
      * the list
      * @param numScores The number of scores to keep on the scoreboard
-     */
+     */  
     public Scoreboard(ArrayList<Player> players, int numScores)
     {
-        NUM_SCORES = numScores;
-        highScores = new ArrayList(NUM_SCORES);
-        highScorePlayer = new ArrayList(NUM_SCORES);
+        NUM_SCORES = numScores; //Assign number of scores 
+        highScores = new ArrayList(NUM_SCORES); //Creates a new ArrayList with the number of scores passed 
+        highScorePlayer = new ArrayList(NUM_SCORES); //Creates a new ArrayList for names with the number of scores passed
         
-        fillScoreBoard(players);
+        fillScoreBoard(players);//Sends the array list of players to the fillScoreBoard 
     }
     
     /**
@@ -40,7 +40,7 @@ public class Scoreboard {
      */
     public Scoreboard(ArrayList<Player> players)
     {
-        this(players, 10);
+        this(players, 10);//sends the varibles to the previous constructor
     }
     
     /**
@@ -62,8 +62,8 @@ public class Scoreboard {
                     //Check the number of scores
                     if(highScores.size() > NUM_SCORES)
                     {
-                        highScores.remove(NUM_SCORES);
-                        highScorePlayer.remove(NUM_SCORES);
+                        highScores.remove(NUM_SCORES); //Removes that particular score
+                        highScorePlayer.remove(NUM_SCORES);//Removes that name with that particular score
                     }
                 }
             }
@@ -76,15 +76,17 @@ public class Scoreboard {
      * @param score The score of the player to add
      * @return 
      */
-    private boolean addScore(String playerName, Score score)
+    private boolean addScore(String playerName, Score score) //Takes name and a Score object
     {
-        if(highScores.isEmpty())
+        //Checks if the highScore ArrayList is empty
+        if(highScores.isEmpty()) 
         {
-            highScores.add(score);
-            highScorePlayer.add(playerName);
+            highScores.add(score); //Adds the first score number 
+            highScorePlayer.add(playerName); //Adds the first player name
             return true;
         }
         
+        //The loop puts the score and name to where the highscore is less than or equal to 0 when comparing the score passed 
         for(int i = 0; i < highScores.size(); i++)
         {
             //test = highScores.get(i).compareTo(score);
@@ -96,14 +98,15 @@ public class Scoreboard {
             }
         }
         
+      //Checks if the size of the highscore is less than the maximum amounf of scores to add the score and name passed
         if(highScores.size() < NUM_SCORES)
         {  
             highScores.add(score);
             highScorePlayer.add(playerName);
-            return true;
+            return true; //Returns true if there is space
         }
         
-        return false;
+        return false; //Returns false if none of the conditions passed
     }
 
     /**
