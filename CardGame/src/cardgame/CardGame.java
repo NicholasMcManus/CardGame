@@ -48,11 +48,11 @@ public class CardGame extends Application {
     VBox playerOptions, labelBox;
     int rowDeck = 2, columnDeck = 2, index = 0;
     Scene scene;    
-    String deckType = "default", playerName;    
+    String deckType = "Default", playerName;    
     ObservableList<String> playersList = FXCollections.observableArrayList();
     Stack<Player> officialPlayerList = new Stack<>();
     Button cards [][];
-    String defaultFolder = "default";
+    String defaultFolder = "Default";
     Player currentPlayer;
     int currentScore;
     
@@ -301,7 +301,7 @@ public class CardGame extends Application {
         Button applyDeckType = new Button("Apply");
 
         ObservableList<String> deckList = FXCollections.observableArrayList(
-                "default", "animal");
+                "Default", "Animal", "Fancy");
 
         final ComboBox deckComboBox = new ComboBox(deckList);
         mainMenuPane.setCenter(deckComboBox);
