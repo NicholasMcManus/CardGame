@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import javafx.util.Duration;
-import java.util.Random;
+import java.util.Collections;
 import java.util.Stack;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -33,7 +32,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -41,12 +39,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.animation.*;
 
-/**
- *
- * @author Nick McManus
- */
 public class CardGame extends Application {
     BorderPane mainMenuPane;
     Label mainMenuLabel;
@@ -421,244 +414,46 @@ public class CardGame extends Application {
         //Add in a lot of things that I don't have the drive to do right now
         //Most of this is getting overhauled
         //Except for the teddy bear, cause why not
-        GridPane boardPane = new GridPane();
-        Button returnButton = new Button("Return Main Menu");
+        //Commenting out instead of deleting in case I mess up somehow
+        mainMenuPane.getChildren().clear();
+        int currentScore = 0, numCards = 0;
+        MatchPane gameBoard;
+        Deck subDeck = new Deck();
+        
+        //Add the return button to the game screen
+        Button returnButton = new Button("Return"); 
         returnButton.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
             public void handle(ActionEvent event) {
                    mainMenuPane.getChildren().clear();
+                   mainMenuPane.setStyle("-fx-background-color: Green");
                    mainMenuPane.setCenter(playerOptions); 
-                   mainMenuPane.setTop(labelBox);
+                   mainMenuPane.setTop(labelBox);                   
             }        
         });
-        returnButton.setAlignment(Pos.BOTTOM_LEFT);        
-        boardPane.setVgap(15); 
-        boardPane.setHgap(15); 
-        boardPane.setStyle("-fx-background-color: Green;");
-        boardPane.setAlignment(Pos.CENTER);
+        returnButton.setAlignment(Pos.BOTTOM_LEFT); 
         
-        switch (difficulty) {
+        //setup the base game
+        Collections.shuffle(myDeck.getDeck());
+        
+        switch(difficulty)
+        {
             case 1:
-                rowDeck = 2;
-                columnDeck = 2;
+                numCards = 2;
                 break;
             case 2:
-                rowDeck = 3;
-                columnDeck = 4;
+                numCards = 6;
                 break;
             case 3:
-                rowDeck = 4;
-                columnDeck = 8;
-                break;
-            default:
-                break;
+                numCards = 16;
         }
         
-        ArrayList<Card> selectedDeck = new ArrayList();
-        cards = new Button[rowDeck][columnDeck];
-        int totalCards = (rowDeck * columnDeck)/2;
-        int arrayCards[] = new int[totalCards]; 
-        int[][] cardsInt = new int[rowDeck][columnDeck];
-        Card[][] cards2dArray = new Card[rowDeck][columnDeck];
-        Random rand = new Random();
+        for(int i = 0; i < numCards; i++)
+            subDeck.addCard(myDeck.getDeck().get(i));
         
-        index = -1;
-
-        int count = 0;
-        
-        
-        do{
-            int choice = rand.nextInt(52)+1;
-            if(selectedDeck.indexOf(myDeck.getDeck().get(choice)) == -1)
-                selectedDeck.add(myDeck.getDeck().get(choice));
-            
-        }while(selectedDeck.size()!= totalCards);
-        
-        
-        for (int i = 0; i < rowDeck; i++){
-            for (int j = 0; j < columnDeck; j++)
-                cards2dArray[i][j] = new Card("N/A", "N/A", 0);
-        }
-        
-        count = 0;
-        
-        int iIndex, jIndex;
-        
-        //goes through eahc element in selectedDeck and adds each element to 
-        //2 random positions in the 2-dim array
-        for (int i = 0; i < selectedDeck.size(); i++){
-            do{
-                iIndex = rand.nextInt(rowDeck);
-                jIndex = rand.nextInt(columnDeck);
-            }while (!cards2dArray[iIndex][jIndex].getSuit().equals("N/A"));
-            
-            cards2dArray[iIndex][jIndex] = selectedDeck.get(i);
-            
-            do{
-                iIndex = rand.nextInt(rowDeck);
-                jIndex = rand.nextInt(columnDeck);
-            }while (!cards2dArray[iIndex][jIndex].getSuit().equals("N/A"));
-            
-            cards2dArray[iIndex][jIndex] = selectedDeck.get(i);
-            }
-        
-        
-        //adds random integers between 1-52 to arrayCards
-        do{
-            int choice = rand.nextInt(52)+1;
-            if(!exists(arrayCards, choice, count)){
-                arrayCards[count] = choice;
-                count++;
-            }
-            
-        }while(count != totalCards);
-        
-        
-        
-        System.out.println("Row deck is " + rowDeck + "and column deck is " + columnDeck);
-        System.out.println("This is the used cards in the deck ");
-        for(int i = 0; i < totalCards; i++){
-            System.out.print(arrayCards[i] + " ");
-        }
-        System.out.println();
-        
-        //puts zeros in two-dimensional  array
-        
-        // ex
-        //      0   0   0   0
-        //      0   0   0   0   
-        //      0   0   0   0
-        //      0   0   0   0
-        
-        for (int i = 0; i < rowDeck; i++){
-            for (int j = 0; j < columnDeck; j++)
-                cardsInt[i][j] = 0;
-        }
-        
-        count = 0;
-        while (count != (rowDeck * columnDeck)/2){ // count keeps track that all elements in the array have value other than 0
-            int choice;
-            do{
-                choice = rand.nextInt(arrayCards.length);
-            }while (arrayCards[choice] == 0);
-            
-            System.out.println("the choice picked from the used cards is" + arrayCards[choice]);
-            
-            do {
-               iIndex = rand.nextInt(rowDeck);
-               jIndex = rand.nextInt(columnDeck);
-            }while(cardsInt[iIndex][jIndex] != 0);
-            
-            System.out.println("iIndex is" + iIndex);
-            System.out.println("jIndex is" + jIndex);
-            
-            cardsInt[iIndex][jIndex] = arrayCards[choice];
-            
-            do {
-               iIndex = rand.nextInt(rowDeck);
-               jIndex = rand.nextInt(columnDeck);
-               
-            }while(cardsInt[iIndex][jIndex] != 0);
-            System.out.println("the second iIndex is" + iIndex);
-            System.out.println("the second jIndex is" + jIndex);
-            
-            cardsInt[iIndex][jIndex] = arrayCards[choice];
-            arrayCards[choice] = 0;
-            
-            count++;
-            System.out.println("count is"+ count);
-            
-            System.out.println("This is what we have in it so far");
-            for (int i = 0; i < rowDeck; i++){
-                for (int j = 0; j < columnDeck; j++)
-                    System.out.print(cardsInt[i][j] + " ");
-                System.out.println();
-            }
-            
-        }
-
-        ArrayList<Integer> rows = new ArrayList(2);
-        ArrayList<Integer> columns = new ArrayList(2);
-        ArrayList<Integer> matches = new ArrayList((rowDeck*columnDeck)/2);
-         //int[] rows = new int[2];
-        //int[] columns = new int[2];
-        
-        
-        for (int i = 0; i < rowDeck; i++) {
-            for (int j = 0; j < columnDeck; j++) {                
-                //System.out.print(i+ "" + j + " ");     
-                cards[i][j] = new Button("");
-                cards[i][j].setGraphic(cards2dArray[i][j].getBack());                
-                final int row = i;
-                final int column = j;
-                cards[i][j].setOnAction(new EventHandler <ActionEvent>(){                    
-                    @Override
-                    public void handle(ActionEvent event) {
-                        
-                        cards[row][column].setGraphic(cards2dArray[row][column].getFront());
-                        //cards[row][column].setGraphic(new ImageView(new Image(getClass().getResourceAsStream("card/"+cardsInt[row][column] +".png"))));
-                        System.out.println("row is " + row + " column is" + column);
-                        
-                        rows.add(row);
-                        columns.add(column);
-                        
-                        cards[row][column].setDisable(true);
-                        
-                        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), e ->{
-                        if (rows.get(1) != null){
-                            
-                            if(cards2dArray[rows.get(0)][columns.get(0)].equals(cards2dArray[rows.get(1)][columns.get(1)])){
-                                cards[rows.get(0)][columns.get(0)].setDisable(true);
-                                cards[rows.get(1)][columns.get(1)].setDisable(true);
-                                matches.add(1);
-                            }
-//                            if (cardsInt[rows.get(0)][columns.get(0)] == cardsInt [rows.get(1)][columns.get(1)]){
-//                                cards[rows.get(0)][columns.get(0)].setDisable(true);
-//                                cards[rows.get(1)][columns.get(1)].setDisable(true);
-//                                matches.add(1);
-//                            }
-                                
-                            else {
-                                cards[rows.get(0)][columns.get(0)].setGraphic(cards2dArray[row][column].getBack());
-                                cards[rows.get(1)][columns.get(1)].setGraphic(cards2dArray[row][column].getBack());
-                                
-                                cards[rows.get(0)][columns.get(0)].setDisable(false);
-                                cards[rows.get(1)][columns.get(1)].setDisable(false);
-                            }
-                            
-                            rows.clear();
-                            columns.clear();
-                            
-                            if (matches.get(rowDeck*columnDeck/2 - 1 ) == 1){
-                            
-                                BorderPane pane = new BorderPane(); 
-                                pane.setStyle("-fx-background-color: Purple");
-                                Label winLabel = new Label("You win!!!");
-                                winLabel.setFont(Font.font("Verdana", 70));
-                                winLabel.setStyle("-fx-background-color: Yellow");
-                                //pane.getChildren().add(winLabel);
-                                pane.setCenter(winLabel);
-                                
-                                Stage winStage = new Stage();
-                                winStage.setTitle("win!!!");
-                                winStage.setScene( new Scene(pane, 400, 200));
-                                winStage.show();
-                            }
-                        }
-                        }));
-                        timeline.setCycleCount(Animation.INDEFINITE);
-                        timeline.play();
-                    }
-                  });                                              
-            }
-        }
-        
-        for (int i = 0; i < rowDeck; i++) {
-            for (int j = 0; j < columnDeck; j++) {
-                boardPane.add(cards[i][j],j,i);
-            }
-        }
+        gameBoard = new MatchPane(subDeck);
+        mainMenuPane.setCenter(gameBoard);
         
         VBox informationBox = new VBox(10);
         Label playerLabel = new Label("Player: " + playerName);
@@ -668,9 +463,7 @@ public class CardGame extends Application {
         HBox bottomBox = new HBox(25);
         bottomBox.getChildren().addAll(returnButton, informationBox);
         bottomBox.setAlignment(Pos.CENTER);
-        
-        mainMenuPane.setCenter(boardPane);
-        mainMenuPane.setBottom(bottomBox);                              
+        mainMenuPane.setBottom(bottomBox);
     }   
 
     /**
