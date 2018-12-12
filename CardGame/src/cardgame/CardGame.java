@@ -17,6 +17,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -51,12 +53,11 @@ public class CardGame extends Application {
     Stack<Player> officialPlayerList = new Stack<>();
     Button cards [][];
     String defaultFolder = "card";
+    Player currentPlayer;
+    int currentScore;
     
     //setting the deck to default deck which can be changed in options
-    Deck myDeck;
-    
-    
-    
+    Deck myDeck;    
     
     @Override    
     public void start(Stage primaryStage) throws IOException, ClassNotFoundException {
@@ -411,31 +412,9 @@ public class CardGame extends Application {
      */
     public void setBoard(int difficulty)
     {        
-        //Add in a lot of things that I don't have the drive to do right now
-        //Most of this is getting overhauled
-        //Except for the teddy bear, cause why not
-        //Commenting out instead of deleting in case I mess up somehow
-        mainMenuPane.getChildren().clear();
-        int currentScore = 0, numCards = 0;
-        MatchPane gameBoard;
-        Deck subDeck = new Deck();
+        int numCards = 0;
         
-        //Add the return button to the game screen
-        Button returnButton = new Button("Return"); 
-        returnButton.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event) {
-                   mainMenuPane.getChildren().clear();
-                   mainMenuPane.setStyle("-fx-background-color: Green");
-                   mainMenuPane.setCenter(playerOptions); 
-                   mainMenuPane.setTop(labelBox);                   
-            }        
-        });
-        returnButton.setAlignment(Pos.BOTTOM_LEFT); 
-        
-        //setup the base game
-        Collections.shuffle(myDeck.getDeck());
+        currentScore = 0;
         
         switch(difficulty)
         {
@@ -449,14 +428,40 @@ public class CardGame extends Application {
                 numCards = 16;
         }
         
+        nextBoard(numCards);
+    }   
+
+    /**
+     * Make a board that actually does stuff
+     * @param numCards The number of cards in the game
+     */
+    public void nextBoard(int numCards)
+    {        
+        //Add in a lot of things that I don't have the drive to do right now
+        //Most of this is getting overhauled
+        //Except for the teddy bear, cause why not
+        //Commenting out instead of deleting in case I mess up somehow
+        mainMenuPane.getChildren().clear();
+        
+        MatchPane gameBoard;
+        Deck subDeck = new Deck();
+        
+        //Add the return button to the game screen
+        Button returnButton = new Button("Return"); 
+        
+        returnButton.setAlignment(Pos.BOTTOM_LEFT); 
+        
+        //setup the base game
+        Collections.shuffle(myDeck.getDeck());
+        
         for(int i = 0; i < numCards; i++)
             subDeck.addCard(myDeck.getDeck().get(i));
         
         gameBoard = new MatchPane(subDeck);
         mainMenuPane.setCenter(gameBoard);
-        
+                
         VBox informationBox = new VBox(10);
-        Label playerLabel = new Label("Player: " + playerName);
+        Label playerLabel = new Label("Player: " + currentPlayer.getName());
         Label deckLabel = new Label("Deck: " + deckType);
         informationBox.getChildren().addAll(playerLabel, deckLabel);
         
@@ -464,8 +469,30 @@ public class CardGame extends Application {
         bottomBox.getChildren().addAll(returnButton, informationBox);
         bottomBox.setAlignment(Pos.CENTER);
         mainMenuPane.setBottom(bottomBox);
-    }   
-
+        
+        returnButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event) {
+                   mainMenuPane.getChildren().clear();
+                   mainMenuPane.setStyle("-fx-background-color: Green");
+                   mainMenuPane.setCenter(playerOptions); 
+                   mainMenuPane.setTop(labelBox);
+                   if(gameBoard.timePoints() != 0)
+                   {
+                       currentScore += gameBoard.matchPoints();
+                   }
+                   currentPlayer.addScore(currentScore);
+            }        
+        });
+        
+        gameBoard.winButton.setOnAction(e -> {
+            //Press and you win
+            currentScore += gameBoard.matchPoints();
+            nextBoard(numCards+2);
+        });
+    }
+    
     /**
      * Create a method to resolve existential crises
      * @param arr The array
@@ -504,6 +531,8 @@ public class CardGame extends Application {
          outputFile.close();
     }
     
+    
+    
     /**
      * Reading, its kind of like saving, but in the opposite direction
      * @throws java.io.IOException
@@ -522,10 +551,17 @@ public class CardGame extends Application {
                 while (true) {
                     officialPlayerList = (Stack<Player>) inputStream.readObject();
                 }
+                
             } catch (java.io.EOFException ex) {
                 //When I run out of stuff to read
                 System.out.println("Read Num of names: " + officialPlayerList.size());
                 System.out.println("End of file");
+                
+                //Start with player 1
+                if(officialPlayerList.isEmpty())
+                    currentPlayer = new Player("Player 1");
+                else
+                    currentPlayer = officialPlayerList.get(0);
                 inputStream.close();
             }
         } catch (FileNotFoundException ex) {
