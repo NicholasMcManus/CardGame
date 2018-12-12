@@ -342,8 +342,15 @@ public class CardGame extends Application {
         addNameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                playersList.add(String.valueOf(textFieldName.getText()));
-                officialPlayerList.push(new Player(String.valueOf(textFieldName.getText())));
+                if(!playersList.contains(String.valueOf(textFieldName.getText())))
+                {
+                    playersList.add(String.valueOf(textFieldName.getText()));
+                    officialPlayerList.push(new Player(String.valueOf(textFieldName.getText())));
+                }
+                else
+                {
+                    textFieldName.setText("Invalid");
+                }
             }
         });
 
@@ -358,6 +365,12 @@ public class CardGame extends Application {
             @Override
             public void handle(ActionEvent event) {
                 playerName = playerComboBox.getValue().toString();
+                for(Player current: officialPlayerList)
+                {
+                    if(current.getName().
+                            equals(playerComboBox.getValue().toString()))
+                        currentPlayer = current;
+                }
             }
         });
 
