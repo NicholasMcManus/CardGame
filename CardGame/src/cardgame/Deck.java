@@ -27,7 +27,7 @@ import javafx.scene.image.ImageView;
 public class Deck implements java.io.Serializable{
     //Declare Variables
     private ArrayList<Card> deck = new ArrayList();
-    private final String defaultbackCard = "card/b1fv.png";
+    //private final String defaultbackCard = "card/b1fv.png";
     
     /**
      * Default Constructor
@@ -77,9 +77,10 @@ public class Deck implements java.io.Serializable{
     /**
      * Add a card when given a path to the front of a card
      * @param cardFront The path to the image
+     * @param cardBack The path to the back of the card
      * @throws FileNotFoundException 
      */
-    public void addCard(String cardFront) throws FileNotFoundException{
+    public void addCard(String cardFront, String cardBack) throws FileNotFoundException{
 
         int value; 
         String suit;
@@ -102,7 +103,7 @@ public class Deck implements java.io.Serializable{
         }
         
        
-       deck.add(new Card(cardFront, defaultbackCard, suit, value));
+       deck.add(new Card(cardFront, cardBack, suit, value));
     }
     
     /**
@@ -140,14 +141,15 @@ public class Deck implements java.io.Serializable{
     }
     
     public void buildDeck(String folder) throws FileNotFoundException{
-        
-        String fileName = "NULL";
+        deck = new ArrayList();
+        String fileName = "NULL", backName = "NULL";
         
         for (int i = 1; i <= 52; i++){
             
             try{
                 fileName = folder + File.separatorChar + i + ".png";
-                this.addCard(fileName);
+                backName = folder + File.separatorChar + "back.png";
+                this.addCard(fileName, backName);
             }catch(FileNotFoundException ex)
             {
                 System.out.println("Done reading cards at " + i);
