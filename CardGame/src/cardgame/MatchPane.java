@@ -32,6 +32,7 @@ public class MatchPane extends BorderPane{
     private GridPane cardPane = new GridPane();
     private BorderPane accessPane = this;
     private Deck deck;
+    public Button winButton = new Button("Next");
     
     public MatchPane(Deck deck){
         
@@ -242,6 +243,7 @@ public class MatchPane extends BorderPane{
                                 winLabel.setStyle("-fx-background-color: Yellow");
                                 //pane.getChildren().add(winLabel);
                                 accessPane.setTop(winLabel);
+                                accessPane.setLeft(winButton);
                             }
                         }
                         }));
@@ -362,7 +364,7 @@ public class MatchPane extends BorderPane{
      * Determine the score created based on the time taken to solve the puzzle
      * @return 
      */
-    private int timePoints()
+    public int timePoints()
     {
         //Possibly have this modified by the number of cards
         //More lax time points during harder levels
