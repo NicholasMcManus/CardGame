@@ -25,12 +25,13 @@ public class ScoreBoardGui extends GridPane{
      */
     public ScoreBoardGui()
     {
-        ArrayList<Player> playerList = new ArrayList();
+        ArrayList<Player> playerList = new ArrayList(); //Creates ArrayList
          
-         playerList.add(new Player());
-         playerList.add(new Player("Bill"));
-         playerList.add(new Player("Carrot"));
+         playerList.add(new Player());//Adds nothingness
+         playerList.add(new Player("Bill"));//Adds Bill
+         playerList.add(new Player("Carrot"));//Adds Carrot
          
+        //Loop for a random score to be generated and assign
          for(Player current: playerList)
          {
              for(int i = 0; i < Math.round(Math.random()*4); i++)
@@ -39,7 +40,7 @@ public class ScoreBoardGui extends GridPane{
              }
          }
          
-         scoreboard = new Scoreboard(playerList);
+         scoreboard = new Scoreboard(playerList); //
          
          generateTable();
     }
@@ -62,9 +63,9 @@ public class ScoreBoardGui extends GridPane{
     public ScoreBoardGui(ArrayList<Player> list, int numScores)
     {
         super();
-        scoreboard = new Scoreboard(list, numScores);
+        scoreboard = new Scoreboard(list, numScores);//Constructs the Scoreboard with the given parameters
         
-        generateTable();
+        generateTable();//Calls the generateTable for the GUI Components 
     }
     
     /**
@@ -72,8 +73,9 @@ public class ScoreBoardGui extends GridPane{
      */
     private void generateTable()
     {      
-        this.addRow(0, new Text("Rank"), new Text("Name"), new Text("Score"), new Text("Date"));
+        this.addRow(0, new Text("Rank"), new Text("Name"), new Text("Score"), new Text("Date")); //Adds to the row new texts 
         
+        //Creates number, name, score and date texts and gets it from the scoreboard object and then adds a row with the new texts
         for(int i = 0; i < scoreboard.getNumScores(); i++)
         {
             Text  number = new Text((i+1)+""),
