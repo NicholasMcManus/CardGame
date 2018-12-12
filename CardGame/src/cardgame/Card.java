@@ -1,21 +1,21 @@
 /*
  * file name: Card.java
- * programmer name: Nick McManus
+ * programmer name: Nick, Josue, Helia
  * date created: 10-24-2018
- * date of last revision: 11-27-2018
+ * date of last revision: 12-12-2018
  * details of last revision: Check for JavaDoc Comments
- * short description: Describe a card which might be serializable
+ * short description: Describe a card so it can be used in a deck
  */
 
 package cardgame;
 
-//import javax.swing.ImageIcon;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import java.io.*;
+
 public class Card implements java.io.Serializable{
+    //Class Variables
     private ImageView cardBack = null;
-            //new ImageView("image/card/b1fv.png"); 
     private ImageView cardFront = null;
     private int cardValue = 0;
     private String cardSuit = "The Crown", cardName = "Joker";
@@ -70,7 +70,13 @@ public class Card implements java.io.Serializable{
                     + "back of the card " + back);
     }
     
-    
+    /**
+     * Create a basic card
+     * @param front the file representing the front of the card 
+     * @param back the file representing the back of the card
+     * @param suit the suit of the card
+     * @param value the value to be stored in the card
+     */
     public Card(String front, String back, String suit, int value) throws FileNotFoundException{
         this(front, back);
         cardSuit = suit;
