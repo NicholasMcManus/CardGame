@@ -48,11 +48,11 @@ public class CardGame extends Application {
     VBox playerOptions, labelBox;
     int rowDeck = 2, columnDeck = 2, index = 0;
     Scene scene;    
-    String deckType, playerName;    
+    String deckType = "default", playerName;    
     ObservableList<String> playersList = FXCollections.observableArrayList();
     Stack<Player> officialPlayerList = new Stack<>();
     Button cards [][];
-    String defaultFolder = "card";
+    String defaultFolder = "default";
     Player currentPlayer;
     int currentScore;
     
@@ -301,7 +301,7 @@ public class CardGame extends Application {
         Button applyDeckType = new Button("Apply");
 
         ObservableList<String> deckList = FXCollections.observableArrayList(
-                "Original Deck", "Second Deck", "Third Deck");
+                "default", "animal");
 
         final ComboBox deckComboBox = new ComboBox(deckList);
         mainMenuPane.setCenter(deckComboBox);
@@ -311,7 +311,13 @@ public class CardGame extends Application {
         applyDeckType.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                deckType = deckComboBox.getValue().toString();
+                try {
+                    myDeck.buildDeck(deckComboBox.getValue().toString());
+                    deckType = deckComboBox.getValue().toString();
+                } catch (FileNotFoundException ex) {
+                    System.out.println("There was an issue reading the file");
+                }
+                
             }
         });
     }
