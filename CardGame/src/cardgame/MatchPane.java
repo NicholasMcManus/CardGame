@@ -18,19 +18,19 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class MatchPane extends javafx.scene.layout.GridPane{
+public class MatchPane extends BorderPane{
     private final int ROW, COL; //Defined in constructor
     private Date startTime, endTime;
-    
+    private GridPane cardPane = new GridPane();
+    private BorderPane accessPane = this;
     private Deck deck;
     
     public MatchPane(Deck deck){
@@ -127,32 +127,11 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         //Shuffle one more time for good measure
         Collections.shuffle(finalDeck);
         
-/** Start of code from old main with tweaks to adapt it to the current Class **/
-        
-        
-        //Need to fix this, probably make a method so this can be handled
-        //in the accessor class
-        
-        /*//
-        Button returnButton = new Button("Return Main Menu");
-        returnButton.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event) {
-                   mainMenuPane.getChildren().clear();
-                   mainMenuPane.setCenter(playerOptions); 
-                   mainMenuPane.setTop(labelBox);
-            }        
-        });
-        
-        returnButton.setAlignment(Pos.BOTTOM_LEFT);
-        //*/
-        
         //Set formatting on the gridpane
-        this.setVgap(15); 
-        this.setHgap(15); 
+        cardPane.setVgap(15); 
+        cardPane.setHgap(15); 
+        cardPane.setAlignment(Pos.CENTER);
         this.setStyle("-fx-background-color: Green;");
-        this.setAlignment(Pos.CENTER);
         
         //Initialize variables
         //Hold the card buttons
@@ -258,18 +237,11 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                             //Check to see if the player has cleared the board
                             if (matches.size() == (ROW*COL/2)){
                                 endTimer();
-                                BorderPane pane = new BorderPane(); 
-                                pane.setStyle("-fx-background-color: Purple");
                                 Label winLabel = new Label("Win Score: " + matchPoints());
                                 winLabel.setFont(Font.font("Verdana", 70));
                                 winLabel.setStyle("-fx-background-color: Yellow");
                                 //pane.getChildren().add(winLabel);
-                                pane.setCenter(winLabel);
-                                
-                                Stage winStage = new Stage();
-                                winStage.setTitle("win!!!");
-                                winStage.setScene( new Scene(pane, 400, 200));
-                                winStage.show();
+                                accessPane.setTop(winLabel);
                             }
                         }
                         }));
@@ -283,7 +255,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
         
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
-                this.add(cards[i][j],j,i);
+                cardPane.add(cards[i][j],j,i);
                 if(cheat)
                     System.out.print(cardArray[i][j].getValue() + " ");
             }
@@ -291,6 +263,7 @@ public class MatchPane extends javafx.scene.layout.GridPane{
                 System.out.println("");
         }
         startTimer();
+        this.setCenter(cardPane);
         
         /*
         //Add this back in the main
