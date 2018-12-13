@@ -1,6 +1,6 @@
 /*
  * file name: Player.java
- * programmer name: Nick McManus
+ * programmer name: Josue, Nick, Helia
  * date created: 11-08-2018
  * date of last revision: 11-27-2018
  * details of last revision: Write JavaDoc Comments
@@ -48,6 +48,7 @@ public class Player implements java.io.Serializable{
      * @param score The score to be added
      */
     public void addScore(int score){
+        //Add a score and if the list is greater than 10, remove the lowest from the list
         scoreList.add(new Score(score));
         Collections.sort(scoreList, Collections.reverseOrder());
         if(scoreList.size() > 10)

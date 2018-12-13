@@ -3,4 +3,4 @@
 - [X] Ask professor for permission
 - [X] Create UML Diagram
 - [X] Create Non-GUI 
-- [ ] Create GUI
+- [X] Create GUI

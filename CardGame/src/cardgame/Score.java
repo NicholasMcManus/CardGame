@@ -11,8 +11,8 @@ package cardgame;
 
 public class Score 
         implements java.io.Serializable, Comparable<Score>{
-    final private int scoreAmt;
-    final private java.util.Date time;
+    final private int scoreAmt; //Stores the score number
+    final private java.util.Date time; //Creates a date data type to store the date/ used for time calculations
     
     /**
      * Constructor for a score object
@@ -41,7 +41,7 @@ public class Score
     }
     
     /**
-     * Function to compare score objects
+     * Function to compare score objects and returns if int data type if from the comparation result
      * @param o The object to be compared to This
      * @return An integer representing the comparison between scores
      */

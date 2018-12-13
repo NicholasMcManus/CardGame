@@ -1,6 +1,6 @@
 /*
  * file name: CardGame.java
- * programmer name: Nick McManus
+ * programmer name: Nick, Josue, Helia
  * date created: 10-18-2018
  * date of last revision: 12/11/2018
  * details of last revision: Serialized the entire stack to make stuff work
